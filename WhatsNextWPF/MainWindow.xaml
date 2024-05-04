@@ -13,20 +13,96 @@
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Noto/#Noto"
         TextOptions.TextFormattingMode="Ideal"
         TextOptions.TextRenderingMode="Auto"
-        Title="What's Next - Anime Recommender" Height="450" Width="800">
-    <materialDesign:Card Padding="32" Margin="16">
-        <Grid VerticalAlignment="Top" Margin="16">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <materialDesign:PackIcon Kind="Account" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-            <TextBlock Grid.Column="1" Margin="8 0 0 0" VerticalAlignment="Center" Text="Name:" Style="{DynamicResource MaterialDesignTitleLargeTextBlock}" />
-            <TextBox Grid.Column="1" Margin="81,0,10,0" VerticalAlignment="Center" Style="{DynamicResource MaterialDesignDataGridTextColumnEditingStyle}" Grid.ColumnSpan="3" />
-            <Button Grid.Column="4" Margin="8 0 0 0" VerticalAlignment="Center" Content="SUBMIT" Style="{DynamicResource MaterialDesignRaisedSecondaryLightButton}" />
-        </Grid>
-    </materialDesign:Card>
+        Title="What's Next - Anime Recommender" Height="450" Width="800"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <TabControl HorizontalContentAlignment="Stretch"
+                Style="{StaticResource MaterialDesignFilledUniformTabControl}">
+        <TabItem Header="Anime">
+            <StackPanel>
+                <Grid VerticalAlignment="Top" Margin="32">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Column="3" Margin="8 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Search:" Style="{DynamicResource MaterialDesignTitleLargeTextBlock}" />
+                    <TextBox 
+                    Grid.Column="1" 
+                    Grid.ColumnSpan="5" 
+                    Grid.Row="2" 
+                    materialDesign:HintAssist.Hint="Search for an Anime" 
+                    materialDesign:TextFieldAssist.HasClearButton="True" 
+                    Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                    Text="{Binding Path=TextAnimeTB, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
+                    KeyDown="TB_KeyDown" />
+                </Grid>
+                <!-- simplest form -->
+                <materialDesign:Snackbar
+                    x:Name="TestSnackBar"
+                    IsActive="{Binding Path=IsActiveSB, Mode=TwoWay}"
+                    Message="{Binding Path=MessageSB, Mode=TwoWay}" />
+            </StackPanel>
+        </TabItem>
+        <TabItem Header="Manga">
+            <StackPanel>
+                <Grid VerticalAlignment="Top" Margin="32">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Column="3" Margin="8 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Search:" Style="{DynamicResource MaterialDesignTitleLargeTextBlock}" />
+                    <materialDesign:AutoSuggestBox
+                        Grid.Column="1"
+                        Grid.ColumnSpan="5"
+                        Grid.Row="2"
+                        materialDesign:HintAssist.Hint="Search for a Manga"
+                        materialDesign:TextFieldAssist.HasClearButton="True"
+                        DropDownElevation="Dp0"
+                        Style="{StaticResource MaterialDesignOutlinedAutoSuggestBox}"
+                        Text="{Binding TextMangaTB, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                        ValueMember="Key" >
+                        <materialDesign:AutoSuggestBox.ItemTemplate>
+                            <DataTemplate>
+                                <DockPanel>
+                                    <Border  Width="Auto" Height="Auto" Background="{Binding Value}" CornerRadius="10" />
+                                    <TextBlock Margin="10,0,0,0" Text="{Binding Key}" />
+                                </DockPanel>
+                            </DataTemplate>
+                        </materialDesign:AutoSuggestBox.ItemTemplate>
+                    </materialDesign:AutoSuggestBox>
+                </Grid>
+            </StackPanel>
+        </TabItem>
+    </TabControl>
 </Window>
