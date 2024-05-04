@@ -13,34 +13,34 @@
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Noto/#Noto"
         TextOptions.TextFormattingMode="Ideal"
         TextOptions.TextRenderingMode="Auto"
-        Title="What's Next - Anime Recommender" Height="450" Width="800"
+        Title="What's Next - Anime Recommender" Height="800" Width="800"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <TabControl HorizontalContentAlignment="Stretch"
                 Style="{StaticResource MaterialDesignFilledUniformTabControl}">
         <TabItem Header="Anime">
             <StackPanel>
                 <Grid VerticalAlignment="Top" Margin="32">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <TextBlock Grid.Column="3" Margin="8 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Search:" Style="{DynamicResource MaterialDesignTitleLargeTextBlock}" />
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Column="3" Margin="8 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Search:" Style="{DynamicResource MaterialDesignTitleLargeTextBlock}" />
                     <TextBox 
                     Grid.Column="1" 
                     Grid.ColumnSpan="5" 
@@ -51,11 +51,40 @@
                     Text="{Binding Path=TextAnimeTB, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
                     KeyDown="TB_KeyDown" />
                 </Grid>
-                <!-- simplest form -->
                 <materialDesign:Snackbar
                     x:Name="TestSnackBar"
-                    IsActive="{Binding Path=IsActiveSB, Mode=TwoWay}"
-                    Message="{Binding Path=MessageSB, Mode=TwoWay}" />
+                    IsActive="{Binding IsActiveSB, Mode=TwoWay}"
+                    Message="{Binding MessageSB, Mode=TwoWay}" Height="100" />
+                <GroupBox
+                    Width="300"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Header="{Binding HeaderGB, Mode=TwoWay}"
+                    Style="{StaticResource MaterialDesignCardGroupBox}">
+                    <GroupBox.HeaderTemplate>
+                        <DataTemplate>
+                            <StackPanel
+                                Orientation="Horizontal">
+                                <TextBlock
+                                    Margin="8,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                    Text="{Binding}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </GroupBox.HeaderTemplate>
+                    <StackPanel>
+                        <Image
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Source="{Binding SourceGB, Mode=TwoWay}" />
+                        <TextBlock
+                            Margin="8"
+                            HorizontalAlignment="Center"
+                            Text="{Binding TextGB, Mode=TwoWay}"
+                            Style="{StaticResource MaterialDesignBody1TextBlock}" />
+                    </StackPanel>
+                </GroupBox>
             </StackPanel>
         </TabItem>
         <TabItem Header="Manga">
