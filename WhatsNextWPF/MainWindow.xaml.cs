@@ -9,6 +9,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -85,6 +86,34 @@ namespace WhatsNextWPF
             }
         }
 
+        private float _heightGBOne = 200;
+        public float HeightGBOne
+        {
+            get => _heightGBOne;
+            set
+            {
+                if (_heightGBOne != value)
+                {
+                    _heightGBOne = value;
+                    OnPropertyChanged(nameof(HeightGBOne));
+                }
+            }
+        }
+
+        private float _opactiyGBOne = 0.5f;
+        public float OpacityGBOne
+        {
+            get => _opactiyGBOne;
+            set
+            {
+                if (_opactiyGBOne != value)
+                {
+                    _opactiyGBOne = value;
+                    OnPropertyChanged(nameof(OpacityGBOne));
+                }
+            }
+        }
+
         private string _headerGB = "Default";
         public string HeaderGB
         {
@@ -153,6 +182,33 @@ namespace WhatsNextWPF
             {
                 ShowSnackBar(TextAnimeTB);
             }
+        }
+
+        private void MouseOver_GB(object sender, MouseEventArgs e)
+        {
+            GroupBox gb = sender as GroupBox;
+
+            if (gb.IsMouseOver && gb != null && gb.Height == 200)
+            {
+                DoubleAnimation heightAnim = new DoubleAnimation(300, TimeSpan.FromSeconds(0.25));
+                DoubleAnimation opacityAnim = new DoubleAnimation(1, TimeSpan.FromSeconds(0.25));
+
+                gbOne.BeginAnimation(GroupBox.HeightProperty, heightAnim);
+                gbOne.BeginAnimation(GroupBox.OpacityProperty, opacityAnim);
+            }
+            else if (gb.IsMouseOver && gb != null && gb.Height != 200)
+            {
+                DoubleAnimation heightAnim = new DoubleAnimation(200, TimeSpan.FromSeconds(0.25));
+                DoubleAnimation opacityAnim = new DoubleAnimation(0.5, TimeSpan.FromSeconds(0.25));
+
+                gbOne.BeginAnimation(GroupBox.HeightProperty, heightAnim);
+                gbOne.BeginAnimation(GroupBox.OpacityProperty, opacityAnim);
+            }
+        }
+
+        private void SelectAnime_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 
