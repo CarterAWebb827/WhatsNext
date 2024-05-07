@@ -86,7 +86,7 @@ namespace WhatsNextWPF
             }
         }
 
-        private float _heightGBOne = 200;
+        private float _heightGBOne = 300;
         public float HeightGBOne
         {
             get => _heightGBOne;
@@ -100,7 +100,7 @@ namespace WhatsNextWPF
             }
         }
 
-        private float _widthGBOne = 150;
+        private float _widthGBOne = 175;
         public float WidthGBOne
         {
             get => _widthGBOne;
@@ -128,7 +128,7 @@ namespace WhatsNextWPF
             }
         }
 
-        private float _heightGBTwo = 200;
+        private float _heightGBTwo = 300;
         public float HeightGBTwo
         {
             get => _heightGBTwo;
@@ -142,7 +142,7 @@ namespace WhatsNextWPF
             }
         }
 
-        private float _widthGBTwo = 150;
+        private float _widthGBTwo = 175;
         public float WidthGBTwo
         {
             get => _widthGBTwo;
@@ -166,6 +166,132 @@ namespace WhatsNextWPF
                 {
                     _opactiyGBTwo = value;
                     OnPropertyChanged(nameof(OpacityGBTwo));
+                }
+            }
+        }
+
+        private float _heightGBThree = 300;
+        public float HeightGBThree
+        {
+            get => _heightGBThree;
+            set
+            {
+                if (_heightGBThree != value)
+                {
+                    _heightGBThree = value;
+                    OnPropertyChanged(nameof(HeightGBThree));
+                }
+            }
+        }
+
+        private float _widthGBThree = 175;
+        public float WidthGBThree
+        {
+            get => _widthGBThree;
+            set
+            {
+                if (_widthGBThree != value)
+                {
+                    _widthGBThree = value;
+                    OnPropertyChanged(nameof(WidthGBThree));
+                }
+            }
+        }
+
+        private float _opactiyGBThree = 0.5f;
+        public float OpacityGBThree
+        {
+            get => _opactiyGBThree;
+            set
+            {
+                if (_opactiyGBThree != value)
+                {
+                    _opactiyGBThree = value;
+                    OnPropertyChanged(nameof(OpacityGBThree));
+                }
+            }
+        }
+
+        private float _heightGBFour = 300;
+        public float HeightGBFour
+        {
+            get => _heightGBFour;
+            set
+            {
+                if (_heightGBFour != value)
+                {
+                    _heightGBFour = value;
+                    OnPropertyChanged(nameof(HeightGBFour));
+                }
+            }
+        }
+
+        private float _widthGBFour = 175;
+        public float WidthGBFour
+        {
+            get => _widthGBFour;
+            set
+            {
+                if (_widthGBFour != value)
+                {
+                    _widthGBFour = value;
+                    OnPropertyChanged(nameof(WidthGBFour));
+                }
+            }
+        }
+
+        private float _opactiyGBFour = 0.5f;
+        public float OpacityGBFour
+        {
+            get => _opactiyGBFour;
+            set
+            {
+                if (_opactiyGBFour != value)
+                {
+                    _opactiyGBFour = value;
+                    OnPropertyChanged(nameof(OpacityGBFour));
+                }
+            }
+        }
+
+        private float _heightGBFive = 300;
+        public float HeightGBFive
+        {
+            get => _heightGBFive;
+            set
+            {
+                if (_heightGBFive != value)
+                {
+                    _heightGBFive = value;
+                    OnPropertyChanged(nameof(HeightGBFive));
+                }
+            }
+        }
+
+        private float _widthGBFive = 175;
+        public float WidthGBFive
+        {
+            get => _widthGBFive;
+            set
+            {
+                if (_widthGBFive != value)
+                {
+                    _widthGBFive = value;
+                    OnPropertyChanged(nameof(WidthGBFive));
+                }
+            }
+        }
+
+        private float _opactiyGBFive = 0.5f;
+        public float OpacityGBFive
+        {
+            get => _opactiyGBFive;
+            set
+            {
+                if (_opactiyGBFive != value)
+                {
+                    _opactiyGBFive = value;
+                    OnPropertyChanged(nameof(OpacityGBFive));
                 }
             }
         }
@@ -224,6 +350,18 @@ namespace WhatsNextWPF
             gbTwo.Width = WidthGBTwo;
             gbTwo.Opacity = OpacityGBTwo;
 
+            gbThree.Height = HeightGBThree;
+            gbThree.Width = WidthGBThree;
+            gbThree.Opacity = OpacityGBThree;
+
+            gbFour.Height = HeightGBFour;
+            gbFour.Width = WidthGBFour;
+            gbFour.Opacity = OpacityGBFour;
+
+            gbFive.Height = HeightGBFive;
+            gbFive.Width = WidthGBFive;
+            gbFive.Opacity = OpacityGBFive;
+
             this.DataContext = this;
         }
 
@@ -250,9 +388,9 @@ namespace WhatsNextWPF
 
         private void MouseOver_GB(object sender, MouseEventArgs e)
         {
-            DoubleAnimation heightAnim = new DoubleAnimation(300, TimeSpan.FromSeconds(0.25));
-            DoubleAnimation widthAnim = new DoubleAnimation(225, TimeSpan.FromSeconds(0.25));
-            DoubleAnimation opacityAnim = new DoubleAnimation(1, TimeSpan.FromSeconds(0.25));
+            DoubleAnimation heightAnim = new DoubleAnimation(330, TimeSpan.FromSeconds(0.2));
+            DoubleAnimation widthAnim = new DoubleAnimation(192.5, TimeSpan.FromSeconds(0.2));
+            DoubleAnimation opacityAnim = new DoubleAnimation(1, TimeSpan.FromSeconds(0.2));
             GroupBox groupBox = sender as GroupBox;
 
             if (groupBox != null)
@@ -265,9 +403,9 @@ namespace WhatsNextWPF
 
         private void MouseLeave_GB(object sender, MouseEventArgs e)
         {
-            DoubleAnimation heightAnim = new DoubleAnimation(200, TimeSpan.FromSeconds(0.25));
-            DoubleAnimation widthAnim = new DoubleAnimation(150, TimeSpan.FromSeconds(0.25));
-            DoubleAnimation opacityAnim = new DoubleAnimation(0.5, TimeSpan.FromSeconds(0.25));
+            DoubleAnimation heightAnim = new DoubleAnimation(300, TimeSpan.FromSeconds(0.2));
+            DoubleAnimation widthAnim = new DoubleAnimation(175, TimeSpan.FromSeconds(0.2));
+            DoubleAnimation opacityAnim = new DoubleAnimation(0.5, TimeSpan.FromSeconds(0.2));
             GroupBox groupBox = sender as GroupBox;
 
             if (groupBox != null)
