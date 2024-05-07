@@ -100,6 +100,20 @@ namespace WhatsNextWPF
             }
         }
 
+        private float _widthGBOne = 150;
+        public float WidthGBOne
+        {
+            get => _widthGBOne;
+            set
+            {
+                if (_widthGBOne != value)
+                {
+                    _widthGBOne = value;
+                    OnPropertyChanged(nameof(WidthGBOne));
+                }
+            }
+        }
+
         private float _opactiyGBOne = 0.5f;
         public float OpacityGBOne
         {
@@ -110,6 +124,48 @@ namespace WhatsNextWPF
                 {
                     _opactiyGBOne = value;
                     OnPropertyChanged(nameof(OpacityGBOne));
+                }
+            }
+        }
+
+        private float _heightGBTwo = 200;
+        public float HeightGBTwo
+        {
+            get => _heightGBTwo;
+            set
+            {
+                if (_heightGBTwo != value)
+                {
+                    _heightGBTwo = value;
+                    OnPropertyChanged(nameof(HeightGBTwo));
+                }
+            }
+        }
+
+        private float _widthGBTwo = 150;
+        public float WidthGBTwo
+        {
+            get => _widthGBTwo;
+            set
+            {
+                if (_widthGBTwo != value)
+                {
+                    _widthGBTwo = value;
+                    OnPropertyChanged(nameof(WidthGBTwo));
+                }
+            }
+        }
+
+        private float _opactiyGBTwo = 0.5f;
+        public float OpacityGBTwo
+        {
+            get => _opactiyGBTwo;
+            set
+            {
+                if (_opactiyGBTwo != value)
+                {
+                    _opactiyGBTwo = value;
+                    OnPropertyChanged(nameof(OpacityGBTwo));
                 }
             }
         }
@@ -160,6 +216,14 @@ namespace WhatsNextWPF
         {
             InitializeComponent();
 
+            gbOne.Height = HeightGBOne;
+            gbTwo.Height = HeightGBOne;
+            gbOne.Opacity = OpacityGBOne;
+
+            gbTwo.Height = HeightGBTwo;
+            gbTwo.Width = WidthGBTwo;
+            gbTwo.Opacity = OpacityGBTwo;
+
             this.DataContext = this;
         }
 
@@ -186,25 +250,34 @@ namespace WhatsNextWPF
 
         private void MouseOver_GB(object sender, MouseEventArgs e)
         {
-            GroupBox gb = sender as GroupBox;
+            DoubleAnimation heightAnim = new DoubleAnimation(300, TimeSpan.FromSeconds(0.25));
+            DoubleAnimation widthAnim = new DoubleAnimation(225, TimeSpan.FromSeconds(0.25));
+            DoubleAnimation opacityAnim = new DoubleAnimation(1, TimeSpan.FromSeconds(0.25));
+            GroupBox groupBox = sender as GroupBox;
 
-            if (gb.IsMouseOver && gb != null && gb.Height == 200)
+            if (groupBox != null)
             {
-                DoubleAnimation heightAnim = new DoubleAnimation(300, TimeSpan.FromSeconds(0.25));
-                DoubleAnimation opacityAnim = new DoubleAnimation(1, TimeSpan.FromSeconds(0.25));
-
-                gbOne.BeginAnimation(GroupBox.HeightProperty, heightAnim);
-                gbOne.BeginAnimation(GroupBox.OpacityProperty, opacityAnim);
-            }
-            else if (gb.IsMouseOver && gb != null && gb.Height != 200)
-            {
-                DoubleAnimation heightAnim = new DoubleAnimation(200, TimeSpan.FromSeconds(0.25));
-                DoubleAnimation opacityAnim = new DoubleAnimation(0.5, TimeSpan.FromSeconds(0.25));
-
-                gbOne.BeginAnimation(GroupBox.HeightProperty, heightAnim);
-                gbOne.BeginAnimation(GroupBox.OpacityProperty, opacityAnim);
+                groupBox.BeginAnimation(GroupBox.HeightProperty, heightAnim);
+                groupBox.BeginAnimation(GroupBox.WidthProperty, widthAnim);
+                groupBox.BeginAnimation(UIElement.OpacityProperty, opacityAnim);
             }
         }
+
+        private void MouseLeave_GB(object sender, MouseEventArgs e)
+        {
+            DoubleAnimation heightAnim = new DoubleAnimation(200, TimeSpan.FromSeconds(0.25));
+            DoubleAnimation widthAnim = new DoubleAnimation(150, TimeSpan.FromSeconds(0.25));
+            DoubleAnimation opacityAnim = new DoubleAnimation(0.5, TimeSpan.FromSeconds(0.25));
+            GroupBox groupBox = sender as GroupBox;
+
+            if (groupBox != null)
+            {
+                groupBox.BeginAnimation(GroupBox.HeightProperty, heightAnim);
+                groupBox.BeginAnimation(GroupBox.WidthProperty, widthAnim);
+                groupBox.BeginAnimation(UIElement.OpacityProperty, opacityAnim);
+            }
+        }
+
 
         private void SelectAnime_Click(object sender, RoutedEventArgs e)
         {

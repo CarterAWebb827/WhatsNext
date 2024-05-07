@@ -81,8 +81,10 @@
                         </Grid.RowDefinitions>
                         <GroupBox
                             x:Name="gbOne"
-                            IsMouseDirectlyOverChanged="MouseOver_GB"
+                            MouseEnter="MouseOver_GB"
+                            MouseLeave="MouseLeave_GB"
                             Height="{Binding HeightGBOne, Mode=TwoWay}"
+                            Width="{Binding WidthGBOne, Mode=TwoWay}"
                             Opacity="{Binding OpacityGBOne, Mode=TwoWay}"
                             Margin="8"
                             Grid.Row="1"
@@ -121,6 +123,11 @@
                         </GroupBox>
                         <GroupBox
                             x:Name="gbTwo"
+                            MouseEnter="MouseOver_GB"
+                            MouseLeave="MouseLeave_GB"
+                            Height="{Binding HeightGBTwo, Mode=TwoWay}"
+                            Width="{Binding WidthGBTwo, Mode=TwoWay}"
+                            Opacity="{Binding OpacityGBTwo, Mode=TwoWay}"
                             Margin="8"
                             Grid.Row="1"
                             Grid.Column="2"
