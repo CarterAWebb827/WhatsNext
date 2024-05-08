@@ -329,7 +329,7 @@ namespace WhatsNextWPF
             }
         }
 
-        private string _textGBOne = "Name:\nRating:\nURL:";
+        private string _textGBOne = "MAL Rating:\nURL:";
         public string TextGBOne
         {
             get => _textGBOne;
@@ -371,7 +371,7 @@ namespace WhatsNextWPF
             }
         }
 
-        private string _textGBTwo = "Name:\nRating:\nURL:";
+        private string _textGBTwo = "MAL Rating:\nURL:";
         public string TextGBTwo
         {
             get => _textGBTwo;
@@ -413,7 +413,7 @@ namespace WhatsNextWPF
             }
         }
 
-        private string _textGBThree = "Name:\nRating:\nURL:";
+        private string _textGBThree = "MAL Rating:\nURL:";
         public string TextGBThree
         {
             get => _textGBThree;
@@ -455,7 +455,7 @@ namespace WhatsNextWPF
             }
         }
 
-        private string _textGBFour = "Name:\nRating:\nURL:";
+        private string _textGBFour = "MAL Rating:\nURL:";
         public string TextGBFour
         {
             get => _textGBFour;
@@ -497,7 +497,7 @@ namespace WhatsNextWPF
             }
         }
 
-        private string _textGBFive = "Name:\nRating:\nURL:";
+        private string _textGBFive = "MAL Rating:\nURL:";
         public string TextGBFive
         {
             get => _textGBFive;
@@ -729,6 +729,8 @@ namespace WhatsNextWPF
         {
             InitializeComponent();
 
+            SelectionSP.Visibility = Visibility.Visible;
+
             gbOne.Height = HeightGBOne;
             gbTwo.Height = HeightGBOne;
             gbOne.Opacity = OpacityGBOne;
@@ -883,6 +885,21 @@ namespace WhatsNextWPF
 
             // Call the ShowSnackBar method to display the information
             //ShowSnackBar(textBlock.Text);
+
+            // Play a transition animation
+
+            DoubleAnimation spOpacityAnimation = new DoubleAnimation(0, TimeSpan.FromSeconds(0.35));
+
+            // Attach the event handler to the Completed event for spOpacityAnimation
+            spOpacityAnimation.Completed += new EventHandler(spOpacityAnimation_Completed);
+
+            SelectionSP.BeginAnimation(StackPanel.OpacityProperty, spOpacityAnimation);
+        }
+
+        private void spOpacityAnimation_Completed(object sender, EventArgs e)
+        {
+            // Hide the selection stackpanel
+            SelectionSP.Visibility = Visibility.Hidden;
         }
     }
 

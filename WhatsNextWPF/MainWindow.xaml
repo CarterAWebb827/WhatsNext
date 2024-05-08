@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WhatsNextWPF"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:smtx="clr-namespace:ShowMeTheXAML;assembly=ShowMeTheXAML"
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
         Background="{DynamicResource MaterialDesign.Brush.Background}"
@@ -15,356 +16,360 @@
         TextOptions.TextRenderingMode="Auto"
         Title="What's Next - Anime Recommender" Height="800" Width="1200"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
-    <TabControl HorizontalContentAlignment="Stretch"
-                Style="{StaticResource MaterialDesignFilledUniformTabControl}">
-        <TabItem Header="Anime">
-            <StackPanel>
-                <StackPanel Orientation="Vertical">
-                    <Grid VerticalAlignment="Top" Margin="32">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <TextBlock Grid.Column="3" Margin="8 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Search:" Style="{DynamicResource MaterialDesignTitleLargeTextBlock}" />
-                        <TextBox 
-                        Grid.Column="1" 
-                        Grid.ColumnSpan="5" 
-                        Grid.Row="2" 
-                        materialDesign:HintAssist.Hint="Search for an Anime" 
-                        materialDesign:TextFieldAssist.HasClearButton="True" 
-                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                        Text="{Binding Path=TextAnimeTB, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
-                        KeyDown="TB_KeyDown" />
-                    </Grid>
-                </StackPanel>
-                <materialDesign:Snackbar
-                x:Name="TestSnackBar"
-                IsActive="{Binding IsActiveSB, Mode=TwoWay}"
-                Message="{Binding MessageSB, Mode=TwoWay}" Height="100" />
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Grid VerticalAlignment="Top" Margin="16">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="225" />
-                            <ColumnDefinition Width="225" />
-                            <ColumnDefinition Width="225" />
-                            <ColumnDefinition Width="225" />
-                            <ColumnDefinition Width="225" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="350" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-                        <GroupBox
-                            x:Name="gbOne"
-                            MouseEnter="MouseOver_GB"
-                            MouseLeave="MouseLeave_GB"
-                            Height="{Binding HeightGBOne, Mode=TwoWay}"
-                            Width="{Binding WidthGBOne, Mode=TwoWay}"
-                            Opacity="{Binding OpacityGBOne, Mode=TwoWay}"
-                            Margin="8"
-                            Grid.Row="0"
-                            Grid.Column="0"
-                            VerticalAlignment="Center"
-                            HorizontalAlignment="Center"
-                            Header="{Binding HeaderGBOne, Mode=TwoWay}"
-                            Style="{StaticResource MaterialDesignCardGroupBox}">
-                            <GroupBox.HeaderTemplate>
-                                <DataTemplate>
-                                    <StackPanel
-                                    Orientation="Horizontal">
-                                        <TextBlock
-                                        Margin="8,0,0,0"
+    <StackPanel>
+        <StackPanel x:Name="SelectionSP" Visibility="Visible" Opacity="1">
+            <TabControl HorizontalContentAlignment="Stretch"
+                    Style="{StaticResource MaterialDesignFilledUniformTabControl}">
+                <TabItem Header="Anime">
+                    <StackPanel>
+                        <StackPanel Orientation="Vertical">
+                            <Grid VerticalAlignment="Top" Margin="32">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Column="3" Margin="8 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Search:" Style="{DynamicResource MaterialDesignTitleLargeTextBlock}" />
+                                <TextBox 
+                                        Grid.Column="1" 
+                                        Grid.ColumnSpan="5" 
+                                        Grid.Row="2" 
+                                        materialDesign:HintAssist.Hint="Search for an Anime" 
+                                        materialDesign:TextFieldAssist.HasClearButton="True" 
+                                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                        Text="{Binding Path=TextAnimeTB, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
+                                        KeyDown="TB_KeyDown" />
+                            </Grid>
+                        </StackPanel>
+                        <materialDesign:Snackbar
+                                x:Name="TestSnackBar"
+                                IsActive="{Binding IsActiveSB, Mode=TwoWay}"
+                                Message="{Binding MessageSB, Mode=TwoWay}" Height="100" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Grid VerticalAlignment="Top" Margin="16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="225" />
+                                    <ColumnDefinition Width="225" />
+                                    <ColumnDefinition Width="225" />
+                                    <ColumnDefinition Width="225" />
+                                    <ColumnDefinition Width="225" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="350" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <GroupBox
+                                        x:Name="gbOne"
+                                        MouseEnter="MouseOver_GB"
+                                        MouseLeave="MouseLeave_GB"
+                                        Height="{Binding HeightGBOne, Mode=TwoWay}"
+                                        Width="{Binding WidthGBOne, Mode=TwoWay}"
+                                        Opacity="{Binding OpacityGBOne, Mode=TwoWay}"
+                                        Margin="8"
+                                        Grid.Row="0"
+                                        Grid.Column="0"
                                         VerticalAlignment="Center"
-                                        Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                        Text="{Binding}" />
-                                    </StackPanel>
-                                </DataTemplate>
-                            </GroupBox.HeaderTemplate>
-                            <StackPanel>
-                                <Image
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Source="{Binding SourceGBOne, Mode=TwoWay}" />
-                                <TextBlock
-                                    Margin="8"
-                                    HorizontalAlignment="Center"
-                                    Text="{Binding TextGBOne, Mode=TwoWay}"
-                                    Style="{StaticResource MaterialDesignBody1TextBlock}" />
-                                <Button
-                                    x:Name="bOne"
-                                    Margin="8"
-                                    HorizontalAlignment="Center"
-                                    Content="Select Anime"
-                                    Style="{StaticResource MaterialDesignRaisedButton}"
-                                    Opacity="{Binding OpacityBOne}"
-                                    Height="{Binding HeightBOne}"
-                                    Width="{Binding WidthBOne}"
-                                    Click="SelectAnime_Click"
-                                    MouseEnter="MouseOver_B"
-                                    MouseLeave="MouseLeave_B"/>
-                            </StackPanel>
-                        </GroupBox>
-                        <GroupBox
-                            x:Name="gbTwo"
-                            MouseEnter="MouseOver_GB"
-                            MouseLeave="MouseLeave_GB"
-                            Height="{Binding HeightGBTwo, Mode=TwoWay}"
-                            Width="{Binding WidthGBTwo, Mode=TwoWay}"
-                            Opacity="{Binding OpacityGBTwo, Mode=TwoWay}"
-                            Margin="8"
-                            Grid.Row="0"
-                            Grid.Column="1"
-                            VerticalAlignment="Center"
-                            HorizontalAlignment="Center"
-                            Header="{Binding HeaderGBTwo, Mode=TwoWay}"
-                            Style="{StaticResource MaterialDesignCardGroupBox}">
-                            <GroupBox.HeaderTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
+                                        HorizontalAlignment="Center"
+                                        Header="{Binding HeaderGBOne, Mode=TwoWay}"
+                                        Style="{StaticResource MaterialDesignCardGroupBox}">
+                                    <GroupBox.HeaderTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock
+                                                        Margin="8,0,0,0"
+                                                        VerticalAlignment="Center"
+                                                        Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                                        Text="{Binding}" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GroupBox.HeaderTemplate>
+                                    <StackPanel>
+                                        <Image
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Source="{Binding SourceGBOne, Mode=TwoWay}" />
                                         <TextBlock
-                                        Margin="8,0,0,0"
+                                                Margin="8"
+                                                HorizontalAlignment="Center"
+                                                Text="{Binding TextGBOne, Mode=TwoWay}"
+                                                Style="{StaticResource MaterialDesignBody1TextBlock}" />
+                                        <Button
+                                                x:Name="bOne"
+                                                Margin="8"
+                                                HorizontalAlignment="Center"
+                                                Content="Select Anime"
+                                                Style="{StaticResource MaterialDesignRaisedButton}"
+                                                Opacity="{Binding OpacityBOne}"
+                                                Height="{Binding HeightBOne}"
+                                                Width="{Binding WidthBOne}"
+                                                Click="SelectAnime_Click"
+                                                MouseEnter="MouseOver_B"
+                                                MouseLeave="MouseLeave_B"/>
+                                    </StackPanel>
+                                </GroupBox>
+                                <GroupBox
+                                        x:Name="gbTwo"
+                                        MouseEnter="MouseOver_GB"
+                                        MouseLeave="MouseLeave_GB"
+                                        Height="{Binding HeightGBTwo, Mode=TwoWay}"
+                                        Width="{Binding WidthGBTwo, Mode=TwoWay}"
+                                        Opacity="{Binding OpacityGBTwo, Mode=TwoWay}"
+                                        Margin="8"
+                                        Grid.Row="0"
+                                        Grid.Column="1"
                                         VerticalAlignment="Center"
-                                        Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                        Text="{Binding}" />
-                                    </StackPanel>
-                                </DataTemplate>
-                            </GroupBox.HeaderTemplate>
-                            <StackPanel>
-                                <Image
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Source="{Binding SourceGBTwo, Mode=TwoWay}" />
-                                <TextBlock
-                                    Margin="8"
-                                    HorizontalAlignment="Center"
-                                    Text="{Binding TextGBTwo, Mode=TwoWay}"
-                                    Style="{StaticResource MaterialDesignBody1TextBlock}" />
-                                <Button
-                                    x:Name="bTwo"
-                                    Margin="8"
-                                    HorizontalAlignment="Center"
-                                    Content="Select Anime"
-                                    Style="{StaticResource MaterialDesignRaisedButton}"
-                                    Opacity="{Binding OpacityBTwo}"
-                                    Height="{Binding HeightBTwo}"
-                                    Width="{Binding WidthBTwo}"
-                                    Click="SelectAnime_Click"
-                                    MouseEnter="MouseOver_B"
-                                    MouseLeave="MouseLeave_B"/>
-                            </StackPanel>
-                        </GroupBox>
-                        <GroupBox
-                            x:Name="gbThree"
-                            MouseEnter="MouseOver_GB"
-                            MouseLeave="MouseLeave_GB"
-                            Height="{Binding HeightGBOne, Mode=TwoWay}"
-                            Width="{Binding WidthGBOne, Mode=TwoWay}"
-                            Opacity="{Binding OpacityGBOne, Mode=TwoWay}"
-                            Margin="8"
-                            Grid.Row="0"
-                            Grid.Column="2"
-                            VerticalAlignment="Center"
-                            HorizontalAlignment="Center"
-                            Header="{Binding HeaderGBThree, Mode=TwoWay}"
-                            Style="{StaticResource MaterialDesignCardGroupBox}">
-                            <GroupBox.HeaderTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
+                                        HorizontalAlignment="Center"
+                                        Header="{Binding HeaderGBTwo, Mode=TwoWay}"
+                                        Style="{StaticResource MaterialDesignCardGroupBox}">
+                                    <GroupBox.HeaderTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock
+                                                        Margin="8,0,0,0"
+                                                        VerticalAlignment="Center"
+                                                        Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                                        Text="{Binding}" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GroupBox.HeaderTemplate>
+                                    <StackPanel>
+                                        <Image
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Source="{Binding SourceGBTwo, Mode=TwoWay}" />
                                         <TextBlock
-                                            Margin="8,0,0,0"
-                                            VerticalAlignment="Center"
-                                            Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                            Text="{Binding}" />
+                                                Margin="8"
+                                                HorizontalAlignment="Center"
+                                                Text="{Binding TextGBTwo, Mode=TwoWay}"
+                                                Style="{StaticResource MaterialDesignBody1TextBlock}" />
+                                        <Button
+                                                x:Name="bTwo"
+                                                Margin="8"
+                                                HorizontalAlignment="Center"
+                                                Content="Select Anime"
+                                                Style="{StaticResource MaterialDesignRaisedButton}"
+                                                Opacity="{Binding OpacityBTwo}"
+                                                Height="{Binding HeightBTwo}"
+                                                Width="{Binding WidthBTwo}"
+                                                Click="SelectAnime_Click"
+                                                MouseEnter="MouseOver_B"
+                                                MouseLeave="MouseLeave_B"/>
                                     </StackPanel>
-                                </DataTemplate>
-                            </GroupBox.HeaderTemplate>
-                            <StackPanel>
-                                <Image
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Source="{Binding SourceGBThree, Mode=TwoWay}" />
-                                <TextBlock
-                                    Margin="8"
-                                    HorizontalAlignment="Center"
-                                    Text="{Binding TextGBThree, Mode=TwoWay}"
-                                    Style="{StaticResource MaterialDesignBody1TextBlock}" />
-                                <Button
-                                    x:Name="bThree"
-                                    Margin="8"
-                                    HorizontalAlignment="Center"
-                                    Content="Select Anime"
-                                    Style="{StaticResource MaterialDesignRaisedButton}"
-                                    Opacity="{Binding OpacityBThree}"
-                                    Height="{Binding HeightBThree}"
-                                    Width="{Binding WidthBThree}"
-                                    Click="SelectAnime_Click"
-                                    MouseEnter="MouseOver_B"
-                                    MouseLeave="MouseLeave_B"/>
-                            </StackPanel>
-                        </GroupBox>
-                        <GroupBox
-                            x:Name="gbFour"
-                            MouseEnter="MouseOver_GB"
-                            MouseLeave="MouseLeave_GB"
-                            Height="{Binding HeightGBOne, Mode=TwoWay}"
-                            Width="{Binding WidthGBOne, Mode=TwoWay}"
-                            Opacity="{Binding OpacityGBOne, Mode=TwoWay}"
-                            Margin="8"
-                            Grid.Row="0"
-                            Grid.Column="3"
-                            VerticalAlignment="Center"
-                            HorizontalAlignment="Center"
-                            Header="{Binding HeaderGBFour, Mode=TwoWay}"
-                            Style="{StaticResource MaterialDesignCardGroupBox}">
-                            <GroupBox.HeaderTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
+                                </GroupBox>
+                                <GroupBox
+                                        x:Name="gbThree"
+                                        MouseEnter="MouseOver_GB"
+                                        MouseLeave="MouseLeave_GB"
+                                        Height="{Binding HeightGBOne, Mode=TwoWay}"
+                                        Width="{Binding WidthGBOne, Mode=TwoWay}"
+                                        Opacity="{Binding OpacityGBOne, Mode=TwoWay}"
+                                        Margin="8"
+                                        Grid.Row="0"
+                                        Grid.Column="2"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"
+                                        Header="{Binding HeaderGBThree, Mode=TwoWay}"
+                                        Style="{StaticResource MaterialDesignCardGroupBox}">
+                                    <GroupBox.HeaderTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock
+                                                        Margin="8,0,0,0"
+                                                        VerticalAlignment="Center"
+                                                        Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                                        Text="{Binding}" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GroupBox.HeaderTemplate>
+                                    <StackPanel>
+                                        <Image
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Source="{Binding SourceGBThree, Mode=TwoWay}" />
                                         <TextBlock
-                                            Margin="8,0,0,0"
-                                            VerticalAlignment="Center"
-                                            Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                            Text="{Binding}" />
+                                                Margin="8"
+                                                HorizontalAlignment="Center"
+                                                Text="{Binding TextGBThree, Mode=TwoWay}"
+                                                Style="{StaticResource MaterialDesignBody1TextBlock}" />
+                                        <Button
+                                                x:Name="bThree"
+                                                Margin="8"
+                                                HorizontalAlignment="Center"
+                                                Content="Select Anime"
+                                                Style="{StaticResource MaterialDesignRaisedButton}"
+                                                Opacity="{Binding OpacityBThree}"
+                                                Height="{Binding HeightBThree}"
+                                                Width="{Binding WidthBThree}"
+                                                Click="SelectAnime_Click"
+                                                MouseEnter="MouseOver_B"
+                                                MouseLeave="MouseLeave_B"/>
                                     </StackPanel>
-                                </DataTemplate>
-                            </GroupBox.HeaderTemplate>
-                            <StackPanel>
-                                <Image
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Source="{Binding SourceGBFour, Mode=TwoWay}" />
-                                <TextBlock
-                                    Margin="8"
-                                    HorizontalAlignment="Center"
-                                    Text="{Binding TextGBFour, Mode=TwoWay}"
-                                    Style="{StaticResource MaterialDesignBody1TextBlock}" />
-                                <Button
-                                    x:Name="bFour"
-                                    Margin="8"
-                                    HorizontalAlignment="Center"
-                                    Content="Select Anime"
-                                    Style="{StaticResource MaterialDesignRaisedButton}"
-                                    Opacity="{Binding OpacityBFour}"
-                                    Height="{Binding HeightBFour}"
-                                    Width="{Binding WidthBFour}"
-                                    Click="SelectAnime_Click"
-                                    MouseEnter="MouseOver_B"
-                                    MouseLeave="MouseLeave_B"/>
-                            </StackPanel>
-                        </GroupBox>
-                        <GroupBox
-                            x:Name="gbFive"
-                            MouseEnter="MouseOver_GB"
-                            MouseLeave="MouseLeave_GB"
-                            Height="{Binding HeightGBOne, Mode=TwoWay}"
-                            Width="{Binding WidthGBOne, Mode=TwoWay}"
-                            Opacity="{Binding OpacityGBOne, Mode=TwoWay}"
-                            Margin="8"
-                            Grid.Row="0"
-                            Grid.Column="4"
-                            VerticalAlignment="Center"
-                            HorizontalAlignment="Center"
-                            Header="{Binding HeaderGBFive, Mode=TwoWay}"
-                            Style="{StaticResource MaterialDesignCardGroupBox}">
-                            <GroupBox.HeaderTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
+                                </GroupBox>
+                                <GroupBox
+                                        x:Name="gbFour"
+                                        MouseEnter="MouseOver_GB"
+                                        MouseLeave="MouseLeave_GB"
+                                        Height="{Binding HeightGBOne, Mode=TwoWay}"
+                                        Width="{Binding WidthGBOne, Mode=TwoWay}"
+                                        Opacity="{Binding OpacityGBOne, Mode=TwoWay}"
+                                        Margin="8"
+                                        Grid.Row="0"
+                                        Grid.Column="3"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"
+                                        Header="{Binding HeaderGBFour, Mode=TwoWay}"
+                                        Style="{StaticResource MaterialDesignCardGroupBox}">
+                                    <GroupBox.HeaderTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock
+                                                        Margin="8,0,0,0"
+                                                        VerticalAlignment="Center"
+                                                        Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                                        Text="{Binding}" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GroupBox.HeaderTemplate>
+                                    <StackPanel>
+                                        <Image
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Source="{Binding SourceGBFour, Mode=TwoWay}" />
                                         <TextBlock
-                                            Margin="8,0,0,0"
-                                            VerticalAlignment="Center"
-                                            Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                            Text="{Binding}" />
+                                                Margin="8"
+                                                HorizontalAlignment="Center"
+                                                Text="{Binding TextGBFour, Mode=TwoWay}"
+                                                Style="{StaticResource MaterialDesignBody1TextBlock}" />
+                                        <Button
+                                                x:Name="bFour"
+                                                Margin="8"
+                                                HorizontalAlignment="Center"
+                                                Content="Select Anime"
+                                                Style="{StaticResource MaterialDesignRaisedButton}"
+                                                Opacity="{Binding OpacityBFour}"
+                                                Height="{Binding HeightBFour}"
+                                                Width="{Binding WidthBFour}"
+                                                Click="SelectAnime_Click"
+                                                MouseEnter="MouseOver_B"
+                                                MouseLeave="MouseLeave_B"/>
                                     </StackPanel>
-                                </DataTemplate>
-                            </GroupBox.HeaderTemplate>
-                            <StackPanel>
-                                <Image
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Source="{Binding SourceGBFive, Mode=TwoWay}" />
-                                <TextBlock
-                                    Margin="8"
-                                    HorizontalAlignment="Center"
-                                    Text="{Binding TextGBFive, Mode=TwoWay}"
-                                    Style="{StaticResource MaterialDesignBody1TextBlock}" />
-                                <Button
-                                    x:Name="bFive"
-                                    Margin="8"
-                                    HorizontalAlignment="Center"
-                                    Content="Select Anime"
-                                    Style="{StaticResource MaterialDesignRaisedButton}"
-                                    Opacity="{Binding OpacityBFive}"
-                                    Height="{Binding HeightBFive}"
-                                    Width="{Binding WidthBFive}"
-                                    Click="SelectAnime_Click"
-                                    MouseEnter="MouseOver_B"
-                                    MouseLeave="MouseLeave_B"/>
-                            </StackPanel>
-                        </GroupBox>
-                    </Grid>
-                </StackPanel>
-            </StackPanel>
-        </TabItem>
-        <TabItem Header="Manga">
-            <StackPanel>
-                <Grid VerticalAlignment="Top" Margin="32">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <TextBlock Grid.Column="3" Margin="8 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Search:" Style="{DynamicResource MaterialDesignTitleLargeTextBlock}" />
-                    <materialDesign:AutoSuggestBox
-                        Grid.Column="1"
-                        Grid.ColumnSpan="5"
-                        Grid.Row="2"
-                        materialDesign:HintAssist.Hint="Search for a Manga"
-                        materialDesign:TextFieldAssist.HasClearButton="True"
-                        DropDownElevation="Dp0"
-                        Style="{StaticResource MaterialDesignOutlinedAutoSuggestBox}"
-                        Text="{Binding TextMangaTB, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                        ValueMember="Key" >
-                        <materialDesign:AutoSuggestBox.ItemTemplate>
-                            <DataTemplate>
-                                <DockPanel>
-                                    <Border  Width="Auto" Height="Auto" Background="{Binding Value}" CornerRadius="10" />
-                                    <TextBlock Margin="10,0,0,0" Text="{Binding Key}" />
-                                </DockPanel>
-                            </DataTemplate>
-                        </materialDesign:AutoSuggestBox.ItemTemplate>
-                    </materialDesign:AutoSuggestBox>
-                </Grid>
-            </StackPanel>
-        </TabItem>
-    </TabControl>
+                                </GroupBox>
+                                <GroupBox
+                                        x:Name="gbFive"
+                                        MouseEnter="MouseOver_GB"
+                                        MouseLeave="MouseLeave_GB"
+                                        Height="{Binding HeightGBOne, Mode=TwoWay}"
+                                        Width="{Binding WidthGBOne, Mode=TwoWay}"
+                                        Opacity="{Binding OpacityGBOne, Mode=TwoWay}"
+                                        Margin="8"
+                                        Grid.Row="0"
+                                        Grid.Column="4"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"
+                                        Header="{Binding HeaderGBFive, Mode=TwoWay}"
+                                        Style="{StaticResource MaterialDesignCardGroupBox}">
+                                    <GroupBox.HeaderTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock
+                                                        Margin="8,0,0,0"
+                                                        VerticalAlignment="Center"
+                                                        Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                                        Text="{Binding}" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GroupBox.HeaderTemplate>
+                                    <StackPanel>
+                                        <Image
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Source="{Binding SourceGBFive, Mode=TwoWay}" />
+                                        <TextBlock
+                                                Margin="8"
+                                                HorizontalAlignment="Center"
+                                                Text="{Binding TextGBFive, Mode=TwoWay}"
+                                                Style="{StaticResource MaterialDesignBody1TextBlock}" />
+                                        <Button
+                                                x:Name="bFive"
+                                                Margin="8"
+                                                HorizontalAlignment="Center"
+                                                Content="Select Anime"
+                                                Style="{StaticResource MaterialDesignRaisedButton}"
+                                                Opacity="{Binding OpacityBFive}"
+                                                Height="{Binding HeightBFive}"
+                                                Width="{Binding WidthBFive}"
+                                                Click="SelectAnime_Click"
+                                                MouseEnter="MouseOver_B"
+                                                MouseLeave="MouseLeave_B"/>
+                                    </StackPanel>
+                                </GroupBox>
+                            </Grid>
+                        </StackPanel>
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="Manga">
+                    <StackPanel>
+                        <Grid VerticalAlignment="Top" Margin="32">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="312*" />
+                                <ColumnDefinition Width="67*"/>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="379*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="379*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Column="3" Margin="157,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Text="Search:" Style="{DynamicResource MaterialDesignTitleLargeTextBlock}" Grid.ColumnSpan="2" />
+                            <materialDesign:AutoSuggestBox
+                                    Grid.Column="1"
+                                    Grid.ColumnSpan="6"
+                                    Grid.Row="2"
+                                    materialDesign:HintAssist.Hint="Search for a Manga"
+                                    materialDesign:TextFieldAssist.HasClearButton="True"
+                                    DropDownElevation="Dp0"
+                                    Style="{StaticResource MaterialDesignOutlinedAutoSuggestBox}"
+                                    Text="{Binding TextMangaTB, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                    ValueMember="Key" >
+                                <materialDesign:AutoSuggestBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <DockPanel>
+                                            <Border  Width="Auto" Height="Auto" Background="{Binding Value}" CornerRadius="10" />
+                                            <TextBlock Margin="10,0,0,0" Text="{Binding Key}" />
+                                        </DockPanel>
+                                    </DataTemplate>
+                                </materialDesign:AutoSuggestBox.ItemTemplate>
+                            </materialDesign:AutoSuggestBox>
+                        </Grid>
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
+        </StackPanel>
+    </StackPanel>
 </Window>
