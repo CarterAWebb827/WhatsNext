@@ -58,7 +58,7 @@
                 IsActive="{Binding IsActiveSB, Mode=TwoWay}"
                 Message="{Binding MessageSB, Mode=TwoWay}" Height="100" />
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Grid VerticalAlignment="Top" Margin="32">
+                    <Grid VerticalAlignment="Top" Margin="16">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="225" />
                             <ColumnDefinition Width="225" />
@@ -82,7 +82,7 @@
                             Grid.Column="0"
                             VerticalAlignment="Center"
                             HorizontalAlignment="Center"
-                            Header="{Binding HeaderGB, Mode=TwoWay}"
+                            Header="{Binding HeaderGBOne, Mode=TwoWay}"
                             Style="{StaticResource MaterialDesignCardGroupBox}">
                             <GroupBox.HeaderTemplate>
                                 <DataTemplate>
@@ -100,18 +100,24 @@
                                 <Image
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    Source="{Binding SourceGB, Mode=TwoWay}" />
+                                    Source="{Binding SourceGBOne, Mode=TwoWay}" />
                                 <TextBlock
                                     Margin="8"
                                     HorizontalAlignment="Center"
-                                    Text="{Binding TextGB, Mode=TwoWay}"
+                                    Text="{Binding TextGBOne, Mode=TwoWay}"
                                     Style="{StaticResource MaterialDesignBody1TextBlock}" />
                                 <Button
+                                    x:Name="bOne"
                                     Margin="8"
                                     HorizontalAlignment="Center"
                                     Content="Select Anime"
                                     Style="{StaticResource MaterialDesignRaisedButton}"
-                                    Click="SelectAnime_Click" />
+                                    Opacity="{Binding OpacityBOne}"
+                                    Height="{Binding HeightBOne}"
+                                    Width="{Binding WidthBOne}"
+                                    Click="SelectAnime_Click"
+                                    MouseEnter="MouseOver_B"
+                                    MouseLeave="MouseLeave_B"/>
                             </StackPanel>
                         </GroupBox>
                         <GroupBox
@@ -126,7 +132,7 @@
                             Grid.Column="1"
                             VerticalAlignment="Center"
                             HorizontalAlignment="Center"
-                            Header="{Binding HeaderGB, Mode=TwoWay}"
+                            Header="{Binding HeaderGBTwo, Mode=TwoWay}"
                             Style="{StaticResource MaterialDesignCardGroupBox}">
                             <GroupBox.HeaderTemplate>
                                 <DataTemplate>
@@ -143,18 +149,24 @@
                                 <Image
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    Source="{Binding SourceGB, Mode=TwoWay}" />
+                                    Source="{Binding SourceGBTwo, Mode=TwoWay}" />
                                 <TextBlock
                                     Margin="8"
                                     HorizontalAlignment="Center"
-                                    Text="{Binding TextGB, Mode=TwoWay}"
+                                    Text="{Binding TextGBTwo, Mode=TwoWay}"
                                     Style="{StaticResource MaterialDesignBody1TextBlock}" />
                                 <Button
+                                    x:Name="bTwo"
                                     Margin="8"
                                     HorizontalAlignment="Center"
                                     Content="Select Anime"
                                     Style="{StaticResource MaterialDesignRaisedButton}"
-                                    Click="SelectAnime_Click" />
+                                    Opacity="{Binding OpacityBTwo}"
+                                    Height="{Binding HeightBTwo}"
+                                    Width="{Binding WidthBTwo}"
+                                    Click="SelectAnime_Click"
+                                    MouseEnter="MouseOver_B"
+                                    MouseLeave="MouseLeave_B"/>
                             </StackPanel>
                         </GroupBox>
                         <GroupBox
@@ -169,7 +181,7 @@
                             Grid.Column="2"
                             VerticalAlignment="Center"
                             HorizontalAlignment="Center"
-                            Header="{Binding HeaderGB, Mode=TwoWay}"
+                            Header="{Binding HeaderGBThree, Mode=TwoWay}"
                             Style="{StaticResource MaterialDesignCardGroupBox}">
                             <GroupBox.HeaderTemplate>
                                 <DataTemplate>
@@ -186,18 +198,24 @@
                                 <Image
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    Source="{Binding SourceGB, Mode=TwoWay}" />
+                                    Source="{Binding SourceGBThree, Mode=TwoWay}" />
                                 <TextBlock
                                     Margin="8"
                                     HorizontalAlignment="Center"
-                                    Text="{Binding TextGB, Mode=TwoWay}"
+                                    Text="{Binding TextGBThree, Mode=TwoWay}"
                                     Style="{StaticResource MaterialDesignBody1TextBlock}" />
                                 <Button
+                                    x:Name="bThree"
                                     Margin="8"
                                     HorizontalAlignment="Center"
                                     Content="Select Anime"
                                     Style="{StaticResource MaterialDesignRaisedButton}"
-                                    Click="SelectAnime_Click" />
+                                    Opacity="{Binding OpacityBThree}"
+                                    Height="{Binding HeightBThree}"
+                                    Width="{Binding WidthBThree}"
+                                    Click="SelectAnime_Click"
+                                    MouseEnter="MouseOver_B"
+                                    MouseLeave="MouseLeave_B"/>
                             </StackPanel>
                         </GroupBox>
                         <GroupBox
@@ -212,7 +230,7 @@
                             Grid.Column="3"
                             VerticalAlignment="Center"
                             HorizontalAlignment="Center"
-                            Header="{Binding HeaderGB, Mode=TwoWay}"
+                            Header="{Binding HeaderGBFour, Mode=TwoWay}"
                             Style="{StaticResource MaterialDesignCardGroupBox}">
                             <GroupBox.HeaderTemplate>
                                 <DataTemplate>
@@ -229,18 +247,24 @@
                                 <Image
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    Source="{Binding SourceGB, Mode=TwoWay}" />
+                                    Source="{Binding SourceGBFour, Mode=TwoWay}" />
                                 <TextBlock
                                     Margin="8"
                                     HorizontalAlignment="Center"
-                                    Text="{Binding TextGB, Mode=TwoWay}"
+                                    Text="{Binding TextGBFour, Mode=TwoWay}"
                                     Style="{StaticResource MaterialDesignBody1TextBlock}" />
                                 <Button
+                                    x:Name="bFour"
                                     Margin="8"
                                     HorizontalAlignment="Center"
                                     Content="Select Anime"
                                     Style="{StaticResource MaterialDesignRaisedButton}"
-                                    Click="SelectAnime_Click" />
+                                    Opacity="{Binding OpacityBFour}"
+                                    Height="{Binding HeightBFour}"
+                                    Width="{Binding WidthBFour}"
+                                    Click="SelectAnime_Click"
+                                    MouseEnter="MouseOver_B"
+                                    MouseLeave="MouseLeave_B"/>
                             </StackPanel>
                         </GroupBox>
                         <GroupBox
@@ -255,7 +279,7 @@
                             Grid.Column="4"
                             VerticalAlignment="Center"
                             HorizontalAlignment="Center"
-                            Header="{Binding HeaderGB, Mode=TwoWay}"
+                            Header="{Binding HeaderGBFive, Mode=TwoWay}"
                             Style="{StaticResource MaterialDesignCardGroupBox}">
                             <GroupBox.HeaderTemplate>
                                 <DataTemplate>
@@ -272,18 +296,24 @@
                                 <Image
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    Source="{Binding SourceGB, Mode=TwoWay}" />
+                                    Source="{Binding SourceGBFive, Mode=TwoWay}" />
                                 <TextBlock
                                     Margin="8"
                                     HorizontalAlignment="Center"
-                                    Text="{Binding TextGB, Mode=TwoWay}"
+                                    Text="{Binding TextGBFive, Mode=TwoWay}"
                                     Style="{StaticResource MaterialDesignBody1TextBlock}" />
                                 <Button
+                                    x:Name="bFive"
                                     Margin="8"
                                     HorizontalAlignment="Center"
                                     Content="Select Anime"
                                     Style="{StaticResource MaterialDesignRaisedButton}"
-                                    Click="SelectAnime_Click" />
+                                    Opacity="{Binding OpacityBFive}"
+                                    Height="{Binding HeightBFive}"
+                                    Width="{Binding WidthBFive}"
+                                    Click="SelectAnime_Click"
+                                    MouseEnter="MouseOver_B"
+                                    MouseLeave="MouseLeave_B"/>
                             </StackPanel>
                         </GroupBox>
                     </Grid>
