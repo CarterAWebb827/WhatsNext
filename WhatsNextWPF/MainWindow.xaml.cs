@@ -874,21 +874,19 @@ namespace WhatsNextWPF
             TextBlock textBlock = (TextBlock)stackPanel.Children[1];
             SourceGBOne = image.Source;
 
-            // Animate the groupbox to the top of the window
-            DoubleAnimation heightAnim = new DoubleAnimation(500, TimeSpan.FromSeconds(0.5));
-            DoubleAnimation widthAnim = new DoubleAnimation(350, TimeSpan.FromSeconds(0.5));
-            DoubleAnimation opacityAnim = new DoubleAnimation(1, TimeSpan.FromSeconds(0.5));
-
-            groupBox.BeginAnimation(GroupBox.HeightProperty, heightAnim);
-            groupBox.BeginAnimation(GroupBox.WidthProperty, widthAnim);
-            groupBox.BeginAnimation(UIElement.OpacityProperty, opacityAnim);
+            Button button = (Button)sender;
+            if (button != null && button.Command != null)
+            {
+                if (button.Command.CanExecute(button.CommandParameter))
+                {
+                    button.Command.Execute(button.CommandParameter);
+                }
+            }
 
             // Call the ShowSnackBar method to display the information
             //ShowSnackBar(textBlock.Text);
 
-            // Play a transition animation
-
-            DoubleAnimation spOpacityAnimation = new DoubleAnimation(0, TimeSpan.FromSeconds(0.35));
+            DoubleAnimation spOpacityAnimation = new DoubleAnimation(0, TimeSpan.FromSeconds(0.8));
 
             // Attach the event handler to the Completed event for spOpacityAnimation
             spOpacityAnimation.Completed += new EventHandler(spOpacityAnimation_Completed);
@@ -898,8 +896,13 @@ namespace WhatsNextWPF
 
         private void spOpacityAnimation_Completed(object sender, EventArgs e)
         {
-            // Hide the selection stackpanel
-            SelectionSP.Visibility = Visibility.Hidden;
+            SelectionSP.Visibility = Visibility.Collapsed;
+
+            SelectedSP.Visibility = Visibility.Visible;
+
+            DoubleAnimation slOpacityAnimation = new DoubleAnimation(1, TimeSpan.FromSeconds(0.8));
+
+            SelectedSP.BeginAnimation(StackPanel.OpacityProperty, slOpacityAnimation);
         }
     }
 

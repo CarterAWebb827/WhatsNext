@@ -4,8 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WhatsNextWPF"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:smtx="clr-namespace:ShowMeTheXAML;assembly=ShowMeTheXAML"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
         Background="{DynamicResource MaterialDesign.Brush.Background}"
@@ -17,7 +17,11 @@
         Title="What's Next - Anime Recommender" Height="800" Width="1200"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <StackPanel>
-        <StackPanel x:Name="SelectionSP" Visibility="Visible" Opacity="1">
+        <!-- Make the Visibility Visible if you arent doing anything with the other Stack Panel -->
+        <StackPanel 
+            x:Name="SelectionSP" 
+            Visibility="Visible" 
+            Opacity="1">
             <TabControl HorizontalContentAlignment="Stretch"
                     Style="{StaticResource MaterialDesignFilledUniformTabControl}">
                 <TabItem Header="Anime">
@@ -109,17 +113,17 @@
                                                 Text="{Binding TextGBOne, Mode=TwoWay}"
                                                 Style="{StaticResource MaterialDesignBody1TextBlock}" />
                                         <Button
-                                                x:Name="bOne"
-                                                Margin="8"
-                                                HorizontalAlignment="Center"
-                                                Content="Select Anime"
-                                                Style="{StaticResource MaterialDesignRaisedButton}"
-                                                Opacity="{Binding OpacityBOne}"
-                                                Height="{Binding HeightBOne}"
-                                                Width="{Binding WidthBOne}"
-                                                Click="SelectAnime_Click"
-                                                MouseEnter="MouseOver_B"
-                                                MouseLeave="MouseLeave_B"/>
+                                            x:Name="bOne"
+                                            Margin="8"
+                                            HorizontalAlignment="Center"
+                                            Content="Select Anime"
+                                            Style="{StaticResource MaterialDesignRaisedButton}"
+                                            Opacity="{Binding OpacityBOne}"
+                                            Height="{Binding HeightBOne}"
+                                            Width="{Binding WidthBOne}"
+                                            Click="SelectAnime_Click"
+                                            MouseEnter="MouseOver_B"
+                                            MouseLeave="MouseLeave_B" />
                                     </StackPanel>
                                 </GroupBox>
                                 <GroupBox
@@ -370,6 +374,17 @@
                     </StackPanel>
                 </TabItem>
             </TabControl>
+        </StackPanel>
+        <!-- Make the Visibility Collapsed if you arent doing anything with this Stack Panel -->
+        <StackPanel
+            x:Name="SelectedSP"
+            Visibility="Collapsed"
+            Opacity="0">
+            <Button
+                x:Name="BackButton"
+                Content="Back"
+                Style="{StaticResource MaterialDesignRaisedButton}"
+                Margin="8" />
         </StackPanel>
     </StackPanel>
 </Window>
