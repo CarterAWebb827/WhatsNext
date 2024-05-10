@@ -1,8 +1,5 @@
-﻿using MaterialDesignThemes.Wpf;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Globalization;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -11,9 +8,12 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
+using System.Net.Http;
+using System.Threading.Tasks;
+using JikanDotNet;
+using System.DirectoryServices;
+using System.Collections.Immutable;
 
 namespace WhatsNextWPF
 {
@@ -725,6 +725,12 @@ namespace WhatsNextWPF
             }
         }
 
+        /* ========== HTTP Client ========== */
+        // Create a new HttpClient instance
+        private static readonly HttpClient client = new HttpClient();
+
+        IJikan jikan;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -772,6 +778,33 @@ namespace WhatsNextWPF
             bFive.Opacity = OpacityBTwo;
 
             this.DataContext = this;
+
+            jikan = new Jikan();
+        }
+
+        // Async is a modifier that you can apply to methods to indicate that they contain code that can be run asynchronously
+        public async Task<string> GetApiDataAsync()
+        {
+            // Call asynchronous network methods in a try/catch block to handle exceptions
+            try
+            {
+                string apiURL = "https://api.jikan.moe/v3/top/anime/1/tv";
+                // Call asynchronous network methods in a try/catch block to handle exceptions
+                HttpResponseMessage response = await client.GetAsync(string.Format(apiURL));
+
+                // Check that response was successful or throw exception
+                response.EnsureSuccessStatusCode();
+
+                string responseBody = await response.Content.ReadAsStringAsync();
+
+                return responseBody;
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine("\nException Caught!");
+                Console.WriteLine("Message :{0} ", e.Message);
+                return "";
+            }
         }
 
         private async void ShowSnackBar(string message)
@@ -787,11 +820,49 @@ namespace WhatsNextWPF
             });
         }
 
-        private void TB_KeyDown(object sender, KeyEventArgs e)
+        private async void TB_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Return && !string.IsNullOrWhiteSpace(TextAnimeTB))
             {
-                ShowSnackBar(TextAnimeTB);
+                //ShowSnackBar(TextAnimeTB);
+
+                // Send a request to the Jikan API to get the anime information
+                var animeResponse = await jikan.SearchAnimeAsync(TextAnimeTB);
+
+                // If the anime is not found, display a snackbar message
+                if (animeResponse.Data.Count == 0)
+                {
+                    ShowSnackBar("Anime not found!");
+                }
+                else
+                {
+                    var firstAnime = animeResponse.Data.First();
+
+                    // Display the anime information in the groupbox
+                    gbOne.Header = firstAnime.Title;
+
+                    // Fetch the anime images
+                    var imageResponse = await jikan.GetAnimePicturesAsync((long)firstAnime.MalId);
+                    var imageUrl = imageResponse.Data.First().JPG.ImageUrl;
+
+                    // Create new StackPanel and populate with the image and text
+                    gbOne.Content = new StackPanel
+                    {
+                        Children =
+                        {
+                            new System.Windows.Controls.Image
+                            {
+                                Source = new BitmapImage(new Uri(imageUrl)),
+                                Height = 200,
+                                Width = 150
+                            },
+                            new TextBlock
+                            {
+                                Text = $"MAL Rating: {firstAnime.Score}\nURL: {firstAnime.Url}"
+                            }
+                        }
+                    };
+                }
             }
         }
 
@@ -870,7 +941,7 @@ namespace WhatsNextWPF
 
             // The groupbox contains a child stackpanel which contains the image and textblock
             StackPanel stackPanel = (StackPanel)groupBox.Content;
-            Image image = (Image)stackPanel.Children[0];
+            System.Windows.Controls.Image image = (System.Windows.Controls.Image)stackPanel.Children[0];
             TextBlock textBlock = (TextBlock)stackPanel.Children[1];
             SourceGBOne = image.Source;
 

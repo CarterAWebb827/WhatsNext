@@ -17,9 +17,8 @@
         Title="What's Next - Anime Recommender" Height="800" Width="1200"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <StackPanel
-        x:Name="SelectedSP"
-        Visibility="Collapsed"
-        Opacity="0">
+        x:Name="SelectedSP">
+        <!--DONT FORGET TO ADD THESE BACK: Visibility="Collapsed" Opacity="0"-->
         <Button
             x:Name="BackButton"
             Content="Return"
