@@ -60,6 +60,15 @@
                                         KeyDown="TB_KeyDown" />
                             </Grid>
                         </StackPanel>
+                        <ProgressBar
+                                x:Name="ProgressBar"
+                                IsIndeterminate="True"
+                                Value="{Binding ValuePB, Mode=TwoWay}"
+                                Height="10"
+                                Width="{Binding WidthPB, Mode=TwoWay}"
+                                Visibility="{Binding VisibilityPB, Mode=TwoWay}"
+                                Opacity="{Binding OpacityPB, Mode=TwoWay}"
+                                Margin="8" />
                         <materialDesign:Snackbar
                                 x:Name="TestSnackBar"
                                 IsActive="{Binding IsActiveSB, Mode=TwoWay}"

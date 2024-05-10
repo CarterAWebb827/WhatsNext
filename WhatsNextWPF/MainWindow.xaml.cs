@@ -725,6 +725,62 @@ namespace WhatsNextWPF
             }
         }
 
+        private float _valuePB = 0;
+        public float ValuePB
+        {
+            get => _valuePB;
+            set
+            {
+                if (_valuePB != value)
+                {
+                    _valuePB = value;
+                    OnPropertyChanged(nameof(ValuePB));
+                }
+            }
+        }
+
+        private float _widthPB = 0;
+        public float WidthPB
+        {
+            get => _widthPB;
+            set
+            {
+                if (_widthPB != value)
+                {
+                    _widthPB = value;
+                    OnPropertyChanged(nameof(WidthPB));
+                }
+            }
+        }
+
+        private Visibility _visibilityPB = Visibility.Hidden;
+        public Visibility VisibilityPB
+        {
+            get => _visibilityPB;
+            set
+            {
+                if (_visibilityPB != value)
+                {
+                    _visibilityPB = value;
+                    OnPropertyChanged(nameof(VisibilityPB));
+                }
+            }
+        }
+
+        private float _opacityPB = 0;
+        public float OpacityPB
+        {
+            get => _opacityPB;
+            set
+            {
+                if (_opacityPB != value)
+                {
+                    _opacityPB = value;
+                    OnPropertyChanged(nameof(OpacityPB));
+                }
+            }
+        }
+
         /* ========== HTTP Client ========== */
         // Create a new HttpClient instance
         private static readonly HttpClient client = new HttpClient();
@@ -777,6 +833,8 @@ namespace WhatsNextWPF
             bFive.Width = WidthBTwo;
             bFive.Opacity = OpacityBTwo;
 
+            WidthPB = (float)this.Width - 200;
+
             this.DataContext = this;
 
             jikan = new Jikan();
@@ -826,8 +884,32 @@ namespace WhatsNextWPF
             {
                 //ShowSnackBar(TextAnimeTB);
 
+                ProgressBar.Visibility = Visibility.Visible;
+                //ProgressBar.Opacity = 1;
+                // animate the opacity of the progress bar
+                DoubleAnimation opacityAnimation = new DoubleAnimation(1, TimeSpan.FromSeconds(0.8));
+                ProgressBar.BeginAnimation(ProgressBar.OpacityProperty, opacityAnimation);
+                /*
+                var progressTask = Task.Run(() =>
+                {
+                    for (int i = 0; i <= 1000; i++)
+                    {
+                        Dispatcher.Invoke(() => ProgressBar.Value = i, System.Windows.Threading.DispatcherPriority.Background);
+                        System.Threading.Thread.Sleep(20);
+                    }
+                });*/
+
                 // Send a request to the Jikan API to get the anime information
                 var animeResponse = await jikan.SearchAnimeAsync(TextAnimeTB);
+
+                // Wait for the simulated delay to finish
+                //await progressTask;
+
+                // Hide the progress bar
+                DoubleAnimation opacityAnimation2 = new DoubleAnimation(0, TimeSpan.FromSeconds(0.8));
+                opacityAnimation2.Completed += (s, e) => ProgressBar.Visibility = Visibility.Hidden;
+                opacityAnimation2.Completed += (s, e) => ProgressBar.Value = 0;
+                ProgressBar.BeginAnimation(ProgressBar.OpacityProperty, opacityAnimation2);
 
                 // If the anime is not found, display a snackbar message
                 if (animeResponse.Data.Count == 0)
@@ -853,7 +935,7 @@ namespace WhatsNextWPF
                             new System.Windows.Controls.Image
                             {
                                 Source = new BitmapImage(new Uri(imageUrl)),
-                                Height = 200,
+                                Height = 150,
                                 Width = 150
                             },
                             new TextBlock
