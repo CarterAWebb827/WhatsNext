@@ -87,10 +87,12 @@ namespace WhatsNextWPF
         }
 
         /* ========== Height, Width, and Opacity for GroupBoxes ========== */
-        public static float baseGBHeight = 315;
-        public static float baseGBWidth = 175;
+        public static float startGBHeight = 0;
+        public static float baseGBHeight = 400;
+        public static float startGBWidth = 0;
+        public static float baseGBWidth = 200;
 
-        private float _heightGBOne = baseGBHeight;
+        private float _heightGBOne = startGBHeight;
         public float HeightGBOne
         {
             get => _heightGBOne;
@@ -104,7 +106,7 @@ namespace WhatsNextWPF
             }
         }
 
-        private float _widthGBOne = baseGBWidth;
+        private float _widthGBOne = startGBWidth;
         public float WidthGBOne
         {
             get => _widthGBOne;
@@ -132,7 +134,7 @@ namespace WhatsNextWPF
             }
         }
 
-        private float _heightGBTwo = baseGBHeight;
+        private float _heightGBTwo = startGBHeight;
         public float HeightGBTwo
         {
             get => _heightGBTwo;
@@ -146,7 +148,7 @@ namespace WhatsNextWPF
             }
         }
 
-        private float _widthGBTwo = baseGBWidth;
+        private float _widthGBTwo = startGBWidth;
         public float WidthGBTwo
         {
             get => _widthGBTwo;
@@ -174,7 +176,7 @@ namespace WhatsNextWPF
             }
         }
 
-        private float _heightGBThree = baseGBHeight;
+        private float _heightGBThree = startGBHeight;
         public float HeightGBThree
         {
             get => _heightGBThree;
@@ -188,7 +190,7 @@ namespace WhatsNextWPF
             }
         }
 
-        private float _widthGBThree = baseGBWidth;
+        private float _widthGBThree = startGBWidth;
         public float WidthGBThree
         {
             get => _widthGBThree;
@@ -216,7 +218,7 @@ namespace WhatsNextWPF
             }
         }
 
-        private float _heightGBFour = baseGBHeight;
+        private float _heightGBFour = startGBHeight;
         public float HeightGBFour
         {
             get => _heightGBFour;
@@ -230,7 +232,7 @@ namespace WhatsNextWPF
             }
         }
 
-        private float _widthGBFour = baseGBWidth;
+        private float _widthGBFour = startGBWidth;
         public float WidthGBFour
         {
             get => _widthGBFour;
@@ -258,7 +260,7 @@ namespace WhatsNextWPF
             }
         }
 
-        private float _heightGBFive = baseGBHeight;
+        private float _heightGBFive = startGBHeight;
         public float HeightGBFive
         {
             get => _heightGBFive;
@@ -272,7 +274,7 @@ namespace WhatsNextWPF
             }
         }
 
-        private float _widthGBFive = baseGBWidth;
+        private float _widthGBFive = startGBWidth;
         public float WidthGBFive
         {
             get => _widthGBFive;
@@ -513,7 +515,7 @@ namespace WhatsNextWPF
 
         /* ========== Height, Width, and Opacity for Buttons ========== */
         public static float baseBHeight = 50;
-        public static float baseBWidth = 115;
+        public static float baseBWidth = 125;
 
         private float _heightBOne = baseBHeight;
         public float HeightBOne
@@ -903,13 +905,7 @@ namespace WhatsNextWPF
                 var animeResponse = await jikan.SearchAnimeAsync(TextAnimeTB);
 
                 // Wait for the simulated delay to finish
-                //await progressTask;
-
-                // Hide the progress bar
-                DoubleAnimation opacityAnimation2 = new DoubleAnimation(0, TimeSpan.FromSeconds(0.8));
-                opacityAnimation2.Completed += (s, e) => ProgressBar.Visibility = Visibility.Hidden;
-                opacityAnimation2.Completed += (s, e) => ProgressBar.Value = 0;
-                ProgressBar.BeginAnimation(ProgressBar.OpacityProperty, opacityAnimation2);
+                //await progressTask;               
 
                 // If the anime is not found, display a snackbar message
                 if (animeResponse.Data.Count == 0)
@@ -919,31 +915,110 @@ namespace WhatsNextWPF
                 else
                 {
                     var firstAnime = animeResponse.Data.First();
+                    var secondAnime = animeResponse.Data.Skip(1).First();
+                    var thirdAnime = animeResponse.Data.Skip(2).First();
+                    var fourthAnime = animeResponse.Data.Skip(3).First();
+                    var fifthAnime = animeResponse.Data.Skip(4).First();
 
                     // Display the anime information in the groupbox
                     gbOne.Header = firstAnime.Title;
+                    gbTwo.Header = secondAnime.Title;
+                    gbThree.Header = thirdAnime.Title;
+                    gbFour.Header = fourthAnime.Title;
+                    gbFive.Header = fifthAnime.Title;
 
                     // Fetch the anime images
-                    var imageResponse = await jikan.GetAnimePicturesAsync((long)firstAnime.MalId);
-                    var imageUrl = imageResponse.Data.First().JPG.ImageUrl;
+                    var imageResponseFirst = await jikan.GetAnimePicturesAsync((long)firstAnime.MalId);
+                    var imageUrlFirst = imageResponseFirst.Data.First().JPG.ImageUrl;
+                    var firstAnimeGenres = firstAnime.Genres.Select(g => g.Name).ToImmutableList();
 
-                    // Create new StackPanel and populate with the image and text
-                    gbOne.Content = new StackPanel
-                    {
-                        Children =
-                        {
-                            new System.Windows.Controls.Image
-                            {
-                                Source = new BitmapImage(new Uri(imageUrl)),
-                                Height = 150,
-                                Width = 150
-                            },
-                            new TextBlock
-                            {
-                                Text = $"MAL Rating: {firstAnime.Score}\nURL: {firstAnime.Url}"
-                            }
-                        }
-                    };
+                    var imageResponseSecond = await jikan.GetAnimePicturesAsync((long)secondAnime.MalId);
+                    var imageUrlSecond = imageResponseSecond.Data.First().JPG.ImageUrl;
+                    var secondAnimeGenres = secondAnime.Genres.Select(g => g.Name).ToImmutableList();
+
+                    var imageResponseThird = await jikan.GetAnimePicturesAsync((long)thirdAnime.MalId);
+                    var imageUrlThird = imageResponseThird.Data.First().JPG.ImageUrl;
+                    var thirdAnimeGenres = thirdAnime.Genres.Select(g => g.Name).ToImmutableList();
+
+                    var imageResponseFourth = await jikan.GetAnimePicturesAsync((long)fourthAnime.MalId);
+                    var imageUrlFourth = imageResponseFourth.Data.First().JPG.ImageUrl;
+                    var fourthAnimeGenres = fourthAnime.Genres.Select(g => g.Name).ToImmutableList();
+
+                    var imageResponseFifth = await jikan.GetAnimePicturesAsync((long)fifthAnime.MalId);
+                    var imageUrlFifth = imageResponseFifth.Data.First().JPG.ImageUrl;
+                    var fifthAnimeGenres = fifthAnime.Genres.Select(g => g.Name).ToImmutableList();
+
+                    var imageWandH = 160;
+
+                    // Add the image and text to each groupbox
+                    SourceGBOne = new BitmapImage(new Uri(imageUrlFirst, UriKind.Absolute));
+                    imgOne.Width = imageWandH;
+                    imgOne.Height = imageWandH;
+                    var genreListOne = string.Join(", ", firstAnimeGenres);
+                    TextGBOne = "MAL Rating: " + firstAnime.Score + "\nGenres: " + genreListOne;
+
+                    SourceGBTwo = new BitmapImage(new Uri(imageUrlSecond, UriKind.Absolute));
+                    imgTwo.Width = imageWandH;
+                    imgTwo.Height = imageWandH;
+                    var genreListTwo = string.Join(", ", secondAnimeGenres);
+                    TextGBTwo = "MAL Rating: " + secondAnime.Score + "\nGenres: " + genreListTwo;
+
+                    SourceGBThree = new BitmapImage(new Uri(imageUrlThird, UriKind.Absolute));
+                    imgThree.Width = imageWandH;
+                    imgThree.Height = imageWandH;
+                    var genreListThree = string.Join(", ", thirdAnimeGenres);
+                    TextGBThree = "MAL Rating: " + thirdAnime.Score + "\nGenres: " + genreListThree;
+
+                    SourceGBFour = new BitmapImage(new Uri(imageUrlFourth, UriKind.Absolute));
+                    imgFour.Width = imageWandH;
+                    imgFour.Height = imageWandH;
+                    var genreListFour = string.Join(", ", fourthAnimeGenres);
+                    TextGBFour = "MAL Rating: " + fourthAnime.Score + "\nGenres: " + genreListFour;
+
+                    SourceGBFive = new BitmapImage(new Uri(imageUrlFifth, UriKind.Absolute));
+                    imgFive.Width = imageWandH;
+                    imgFive.Height = imageWandH;
+                    var genreListFive = string.Join(", ", fifthAnimeGenres);
+                    TextGBFive = "MAL Rating: " + fifthAnime.Score + "\nGenres: " + genreListFive;
+
+                    // Hide the progress bar
+                    DoubleAnimation opacityAnimation2 = new DoubleAnimation(0, TimeSpan.FromSeconds(0.8));
+                    opacityAnimation2.Completed += (s, e) => ProgressBar.Visibility = Visibility.Hidden;
+                    opacityAnimation2.Completed += (s, e) => ProgressBar.Value = 0;
+                    ProgressBar.BeginAnimation(ProgressBar.OpacityProperty, opacityAnimation2);
+
+                    // Show the groupboxes with a width, height, and opacity animation with a delay between each
+                    DoubleAnimation heightAnim = new DoubleAnimation(baseGBHeight, TimeSpan.FromSeconds(0.35));
+                    DoubleAnimation widthAnim = new DoubleAnimation(baseGBWidth, TimeSpan.FromSeconds(0.35));
+                    DoubleAnimation opacityAnim = new DoubleAnimation(0.5, TimeSpan.FromSeconds(0.35));
+
+                    gbOne.BeginAnimation(GroupBox.HeightProperty, heightAnim);
+                    gbOne.BeginAnimation(GroupBox.WidthProperty, widthAnim);
+                    gbOne.BeginAnimation(UIElement.OpacityProperty, opacityAnim);
+
+                    await Task.Delay(200);
+
+                    gbTwo.BeginAnimation(GroupBox.HeightProperty, heightAnim);
+                    gbTwo.BeginAnimation(GroupBox.WidthProperty, widthAnim);
+                    gbTwo.BeginAnimation(UIElement.OpacityProperty, opacityAnim);
+
+                    await Task.Delay(200);
+
+                    gbThree.BeginAnimation(GroupBox.HeightProperty, heightAnim);
+                    gbThree.BeginAnimation(GroupBox.WidthProperty, widthAnim);
+                    gbThree.BeginAnimation(UIElement.OpacityProperty, opacityAnim);
+
+                    await Task.Delay(200);
+
+                    gbFour.BeginAnimation(GroupBox.HeightProperty, heightAnim);
+                    gbFour.BeginAnimation(GroupBox.WidthProperty, widthAnim);
+                    gbFour.BeginAnimation(UIElement.OpacityProperty, opacityAnim);
+
+                    await Task.Delay(200);
+
+                    gbFive.BeginAnimation(GroupBox.HeightProperty, heightAnim);
+                    gbFive.BeginAnimation(GroupBox.WidthProperty, widthAnim);
+                    gbFive.BeginAnimation(UIElement.OpacityProperty, opacityAnim);
                 }
             }
         }
