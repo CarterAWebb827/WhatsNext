@@ -25,7 +25,7 @@
             <TabControl HorizontalContentAlignment="Stretch"
                     Style="{StaticResource MaterialDesignFilledUniformTabControl}">
                 <TabItem Header="Anime">
-                    <StackPanel>
+                    <StackPanel Height="736">
                         <StackPanel Orientation="Vertical">
                             <Grid VerticalAlignment="Top" Margin="32">
                                 <Grid.ColumnDefinitions>
@@ -79,7 +79,7 @@
                                     <ColumnDefinition Width="250" />
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="450" />
+                                    <RowDefinition Height="425" />
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
                                 <GroupBox
@@ -108,12 +108,12 @@
                                         </DataTemplate>
                                     </GroupBox.HeaderTemplate>
                                     <Grid>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="*" />
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*" />
                                             <RowDefinition Height="*" />
                                             <RowDefinition Height="80" />
-                                            </Grid.RowDefinitions>
-                                            <Image
+                                        </Grid.RowDefinitions>
+                                        <Image
                                                 x:Name="imgOne"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
@@ -389,6 +389,56 @@
                                 </GroupBox>
                             </Grid>
                         </StackPanel>
+                        <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="115" />
+                            </Grid.RowDefinitions>
+                            <Button
+                                x:Name="backwardB"
+                                Grid.Column="0"
+                                Grid.Row="0"
+                                VerticalAlignment="Top"
+                                HorizontalAlignment="Right"
+                                Margin="8"
+                                materialDesign:ButtonProgressAssist.IndicatorBackground="{StaticResource MaterialDesign.Brush.Secondary}"
+                                materialDesign:ButtonProgressAssist.IndicatorForeground="{StaticResource MaterialDesign.Brush.Primary.Dark}"
+                                materialDesign:ButtonProgressAssist.IsIndicatorVisible="True"
+                                materialDesign:ButtonProgressAssist.Value="0"
+                                Background="{StaticResource MaterialDesign.Brush.Primary}"
+                                BorderBrush="{StaticResource MaterialDesign.Brush.Primary}"
+                                Content="{materialDesign:PackIcon Backburger}"
+                                Foreground="#DD000000"
+                                IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                                Style="{StaticResource MaterialDesignFloatingActionButton}"/>
+                            <materialDesign:Snackbar
+                                x:Name="TestSnackBar"
+                                Grid.Column="1"
+                                VerticalAlignment="Top"
+                                IsActive="{Binding IsActiveSB, Mode=TwoWay}"
+                                Message="{Binding MessageSB, Mode=TwoWay}" Height="75" />
+                            <Button
+                                x:Name="forwardB"
+                                Grid.Column="4"
+                                Grid.Row="0"
+                                VerticalAlignment="Top"
+                                HorizontalAlignment="Left"
+                                Margin="8"
+                                materialDesign:ButtonProgressAssist.IndicatorBackground="{StaticResource MaterialDesign.Brush.Secondary}"
+                                materialDesign:ButtonProgressAssist.IndicatorForeground="{StaticResource MaterialDesign.Brush.Primary.Dark}"
+                                materialDesign:ButtonProgressAssist.IsIndicatorVisible="True"
+                                materialDesign:ButtonProgressAssist.Value="0"
+                                Background="{StaticResource MaterialDesign.Brush.Primary}"
+                                BorderBrush="{StaticResource MaterialDesign.Brush.Primary}"
+                                Content="{materialDesign:PackIcon Forwardburger}"
+                                Foreground="#DD000000"
+                                IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+                                Style="{StaticResource MaterialDesignFloatingActionButton}"/>
+                        </Grid>
                     </StackPanel>
                 </TabItem>
                 <TabItem Header="Manga">
@@ -451,9 +501,6 @@
                 Style="{StaticResource MaterialDesignRaisedButton}"
                 Margin="8" />
         </StackPanel>
-        <materialDesign:Snackbar
-                                x:Name="TestSnackBar"
-                                IsActive="{Binding IsActiveSB, Mode=TwoWay}"
-                                Message="{Binding MessageSB, Mode=TwoWay}" Height="100" />
+        
     </StackPanel>
 </Window>

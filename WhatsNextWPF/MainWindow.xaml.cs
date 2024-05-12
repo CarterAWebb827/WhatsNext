@@ -783,6 +783,8 @@ namespace WhatsNextWPF
             }
         }
 
+        public int animeCounter = 0;
+
         /* ========== HTTP Client ========== */
         // Create a new HttpClient instance
         private static readonly HttpClient client = new HttpClient();
@@ -914,11 +916,11 @@ namespace WhatsNextWPF
                 }
                 else
                 {
-                    var firstAnime = animeResponse.Data.First();
-                    var secondAnime = animeResponse.Data.Skip(1).First();
-                    var thirdAnime = animeResponse.Data.Skip(2).First();
-                    var fourthAnime = animeResponse.Data.Skip(3).First();
-                    var fifthAnime = animeResponse.Data.Skip(4).First();
+                    var firstAnime = animeResponse.Data.Skip(animeCounter).First();
+                    var secondAnime = animeResponse.Data.Skip(animeCounter + 1).First();
+                    var thirdAnime = animeResponse.Data.Skip(animeCounter + 2).First();
+                    var fourthAnime = animeResponse.Data.Skip(animeCounter + 3).First();
+                    var fifthAnime = animeResponse.Data.Skip(animeCounter + 4).First();
 
                     // Display the anime information in the groupbox
                     gbOne.Header = firstAnime.Title;
