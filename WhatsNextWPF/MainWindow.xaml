@@ -405,6 +405,7 @@
                                 VerticalAlignment="Top"
                                 HorizontalAlignment="Right"
                                 Margin="8"
+                                Opacity="{Binding OpacityBB, Mode=TwoWay}"
                                 materialDesign:ButtonProgressAssist.IndicatorBackground="{StaticResource MaterialDesign.Brush.Secondary}"
                                 materialDesign:ButtonProgressAssist.IndicatorForeground="{StaticResource MaterialDesign.Brush.Primary.Dark}"
                                 materialDesign:ButtonProgressAssist.IsIndicatorVisible="True"
@@ -413,8 +414,9 @@
                                 BorderBrush="{StaticResource MaterialDesign.Brush.Primary}"
                                 Content="{materialDesign:PackIcon Backburger}"
                                 Foreground="#DD000000"
-                                IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
-                                Style="{StaticResource MaterialDesignFloatingActionButton}"/>
+                                IsEnabled="{Binding EnabledBB, Mode=TwoWay}"
+                                Style="{StaticResource MaterialDesignFloatingActionButton}"
+                                Click="Backward_Click"/>
                             <materialDesign:Snackbar
                                 x:Name="TestSnackBar"
                                 Grid.Column="1"
@@ -428,6 +430,7 @@
                                 VerticalAlignment="Top"
                                 HorizontalAlignment="Left"
                                 Margin="8"
+                                Opacity="{Binding OpacityFB, Mode=TwoWay}"
                                 materialDesign:ButtonProgressAssist.IndicatorBackground="{StaticResource MaterialDesign.Brush.Secondary}"
                                 materialDesign:ButtonProgressAssist.IndicatorForeground="{StaticResource MaterialDesign.Brush.Primary.Dark}"
                                 materialDesign:ButtonProgressAssist.IsIndicatorVisible="True"
@@ -436,8 +439,9 @@
                                 BorderBrush="{StaticResource MaterialDesign.Brush.Primary}"
                                 Content="{materialDesign:PackIcon Forwardburger}"
                                 Foreground="#DD000000"
-                                IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
-                                Style="{StaticResource MaterialDesignFloatingActionButton}"/>
+                                IsEnabled="{Binding EnabledFB, Mode=TwoWay}"
+                                Style="{StaticResource MaterialDesignFloatingActionButton}"
+                                Click="Forward_Click"/>
                         </Grid>
                     </StackPanel>
                 </TabItem>

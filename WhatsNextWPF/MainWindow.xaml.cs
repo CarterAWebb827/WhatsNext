@@ -783,13 +783,68 @@ namespace WhatsNextWPF
             }
         }
 
+        private float _opacityBB = 0f;
+        public float OpacityBB
+        {
+            get => _opacityBB;
+            set
+            {
+                if (_opacityBB != value)
+                {
+                    _opacityBB = value;
+                    OnPropertyChanged(nameof(OpacityBB));
+                }
+            }
+        }
+
+        private bool _enabledBB = false;
+        public bool EnabledBB
+        {
+            get => _enabledBB;
+            set
+            {
+                if (_enabledBB != value)
+                {
+                    _enabledBB = value;
+                    OnPropertyChanged(nameof(EnabledBB));
+                }
+            }
+        }
+
+        private float _opacityFB = 0f;
+        public float OpacityFB
+        {
+            get => _opacityFB;
+            set
+            {
+                if (_opacityFB != value)
+                {
+                    _opacityFB = value;
+                    OnPropertyChanged(nameof(OpacityFB));
+                }
+            }
+        }
+
+        private bool _enabledFB = false;
+        public bool EnabledFB
+        {
+            get => _enabledFB;
+            set
+            {
+                if (_enabledFB != value)
+                {
+                    _enabledFB = value;
+                    OnPropertyChanged(nameof(EnabledFB));
+                }
+            }
+        }
+
         public int animeCounter = 0;
 
-        /* ========== HTTP Client ========== */
-        // Create a new HttpClient instance
-        private static readonly HttpClient client = new HttpClient();
-
+        /* ========== Jikan Client ========== */
         IJikan jikan;
+        PaginatedJikanResponse<ICollection<Anime>> animeResponse;
+        string previousEntry = "";
 
         public MainWindow()
         {
@@ -837,36 +892,14 @@ namespace WhatsNextWPF
             bFive.Width = WidthBTwo;
             bFive.Opacity = OpacityBTwo;
 
+            backwardB.IsEnabled = EnabledBB;
+            forwardB.IsEnabled = EnabledFB;
+
             WidthPB = (float)this.Width - 200;
 
             this.DataContext = this;
 
             jikan = new Jikan();
-        }
-
-        // Async is a modifier that you can apply to methods to indicate that they contain code that can be run asynchronously
-        public async Task<string> GetApiDataAsync()
-        {
-            // Call asynchronous network methods in a try/catch block to handle exceptions
-            try
-            {
-                string apiURL = "https://api.jikan.moe/v3/top/anime/1/tv";
-                // Call asynchronous network methods in a try/catch block to handle exceptions
-                HttpResponseMessage response = await client.GetAsync(string.Format(apiURL));
-
-                // Check that response was successful or throw exception
-                response.EnsureSuccessStatusCode();
-
-                string responseBody = await response.Content.ReadAsStringAsync();
-
-                return responseBody;
-            }
-            catch (HttpRequestException e)
-            {
-                Console.WriteLine("\nException Caught!");
-                Console.WriteLine("Message :{0} ", e.Message);
-                return "";
-            }
         }
 
         private async void ShowSnackBar(string message)
@@ -893,135 +926,183 @@ namespace WhatsNextWPF
                 // animate the opacity of the progress bar
                 DoubleAnimation opacityAnimation = new DoubleAnimation(1, TimeSpan.FromSeconds(0.8));
                 ProgressBar.BeginAnimation(ProgressBar.OpacityProperty, opacityAnimation);
-                /*
-                var progressTask = Task.Run(() =>
-                {
-                    for (int i = 0; i <= 1000; i++)
-                    {
-                        Dispatcher.Invoke(() => ProgressBar.Value = i, System.Windows.Threading.DispatcherPriority.Background);
-                        System.Threading.Thread.Sleep(20);
-                    }
-                });*/
-
+                
                 // Send a request to the Jikan API to get the anime information
-                var animeResponse = await jikan.SearchAnimeAsync(TextAnimeTB);
-
-                // Wait for the simulated delay to finish
-                //await progressTask;               
-
+                await GetAnimeInfo();
+                
                 // If the anime is not found, display a snackbar message
                 if (animeResponse.Data.Count == 0)
                 {
                     ShowSnackBar("Anime not found!");
-                }
-                else
-                {
-                    var firstAnime = animeResponse.Data.Skip(animeCounter).First();
-                    var secondAnime = animeResponse.Data.Skip(animeCounter + 1).First();
-                    var thirdAnime = animeResponse.Data.Skip(animeCounter + 2).First();
-                    var fourthAnime = animeResponse.Data.Skip(animeCounter + 3).First();
-                    var fifthAnime = animeResponse.Data.Skip(animeCounter + 4).First();
-
-                    // Display the anime information in the groupbox
-                    gbOne.Header = firstAnime.Title;
-                    gbTwo.Header = secondAnime.Title;
-                    gbThree.Header = thirdAnime.Title;
-                    gbFour.Header = fourthAnime.Title;
-                    gbFive.Header = fifthAnime.Title;
-
-                    // Fetch the anime images
-                    var imageResponseFirst = await jikan.GetAnimePicturesAsync((long)firstAnime.MalId);
-                    var imageUrlFirst = imageResponseFirst.Data.First().JPG.ImageUrl;
-                    var firstAnimeGenres = firstAnime.Genres.Select(g => g.Name).ToImmutableList();
-
-                    var imageResponseSecond = await jikan.GetAnimePicturesAsync((long)secondAnime.MalId);
-                    var imageUrlSecond = imageResponseSecond.Data.First().JPG.ImageUrl;
-                    var secondAnimeGenres = secondAnime.Genres.Select(g => g.Name).ToImmutableList();
-
-                    var imageResponseThird = await jikan.GetAnimePicturesAsync((long)thirdAnime.MalId);
-                    var imageUrlThird = imageResponseThird.Data.First().JPG.ImageUrl;
-                    var thirdAnimeGenres = thirdAnime.Genres.Select(g => g.Name).ToImmutableList();
-
-                    var imageResponseFourth = await jikan.GetAnimePicturesAsync((long)fourthAnime.MalId);
-                    var imageUrlFourth = imageResponseFourth.Data.First().JPG.ImageUrl;
-                    var fourthAnimeGenres = fourthAnime.Genres.Select(g => g.Name).ToImmutableList();
-
-                    var imageResponseFifth = await jikan.GetAnimePicturesAsync((long)fifthAnime.MalId);
-                    var imageUrlFifth = imageResponseFifth.Data.First().JPG.ImageUrl;
-                    var fifthAnimeGenres = fifthAnime.Genres.Select(g => g.Name).ToImmutableList();
-
-                    var imageWandH = 160;
-
-                    // Add the image and text to each groupbox
-                    SourceGBOne = new BitmapImage(new Uri(imageUrlFirst, UriKind.Absolute));
-                    imgOne.Width = imageWandH;
-                    imgOne.Height = imageWandH;
-                    var genreListOne = string.Join(", ", firstAnimeGenres);
-                    TextGBOne = "MAL Rating: " + firstAnime.Score + "\nGenres: " + genreListOne;
-
-                    SourceGBTwo = new BitmapImage(new Uri(imageUrlSecond, UriKind.Absolute));
-                    imgTwo.Width = imageWandH;
-                    imgTwo.Height = imageWandH;
-                    var genreListTwo = string.Join(", ", secondAnimeGenres);
-                    TextGBTwo = "MAL Rating: " + secondAnime.Score + "\nGenres: " + genreListTwo;
-
-                    SourceGBThree = new BitmapImage(new Uri(imageUrlThird, UriKind.Absolute));
-                    imgThree.Width = imageWandH;
-                    imgThree.Height = imageWandH;
-                    var genreListThree = string.Join(", ", thirdAnimeGenres);
-                    TextGBThree = "MAL Rating: " + thirdAnime.Score + "\nGenres: " + genreListThree;
-
-                    SourceGBFour = new BitmapImage(new Uri(imageUrlFourth, UriKind.Absolute));
-                    imgFour.Width = imageWandH;
-                    imgFour.Height = imageWandH;
-                    var genreListFour = string.Join(", ", fourthAnimeGenres);
-                    TextGBFour = "MAL Rating: " + fourthAnime.Score + "\nGenres: " + genreListFour;
-
-                    SourceGBFive = new BitmapImage(new Uri(imageUrlFifth, UriKind.Absolute));
-                    imgFive.Width = imageWandH;
-                    imgFive.Height = imageWandH;
-                    var genreListFive = string.Join(", ", fifthAnimeGenres);
-                    TextGBFive = "MAL Rating: " + fifthAnime.Score + "\nGenres: " + genreListFive;
 
                     // Hide the progress bar
                     DoubleAnimation opacityAnimation2 = new DoubleAnimation(0, TimeSpan.FromSeconds(0.8));
                     opacityAnimation2.Completed += (s, e) => ProgressBar.Visibility = Visibility.Hidden;
                     opacityAnimation2.Completed += (s, e) => ProgressBar.Value = 0;
                     ProgressBar.BeginAnimation(ProgressBar.OpacityProperty, opacityAnimation2);
-
-                    // Show the groupboxes with a width, height, and opacity animation with a delay between each
-                    DoubleAnimation heightAnim = new DoubleAnimation(baseGBHeight, TimeSpan.FromSeconds(0.35));
-                    DoubleAnimation widthAnim = new DoubleAnimation(baseGBWidth, TimeSpan.FromSeconds(0.35));
-                    DoubleAnimation opacityAnim = new DoubleAnimation(0.5, TimeSpan.FromSeconds(0.35));
-
-                    gbOne.BeginAnimation(GroupBox.HeightProperty, heightAnim);
-                    gbOne.BeginAnimation(GroupBox.WidthProperty, widthAnim);
-                    gbOne.BeginAnimation(UIElement.OpacityProperty, opacityAnim);
-
-                    await Task.Delay(200);
-
-                    gbTwo.BeginAnimation(GroupBox.HeightProperty, heightAnim);
-                    gbTwo.BeginAnimation(GroupBox.WidthProperty, widthAnim);
-                    gbTwo.BeginAnimation(UIElement.OpacityProperty, opacityAnim);
-
-                    await Task.Delay(200);
-
-                    gbThree.BeginAnimation(GroupBox.HeightProperty, heightAnim);
-                    gbThree.BeginAnimation(GroupBox.WidthProperty, widthAnim);
-                    gbThree.BeginAnimation(UIElement.OpacityProperty, opacityAnim);
-
-                    await Task.Delay(200);
-
-                    gbFour.BeginAnimation(GroupBox.HeightProperty, heightAnim);
-                    gbFour.BeginAnimation(GroupBox.WidthProperty, widthAnim);
-                    gbFour.BeginAnimation(UIElement.OpacityProperty, opacityAnim);
-
-                    await Task.Delay(200);
-
-                    gbFive.BeginAnimation(GroupBox.HeightProperty, heightAnim);
-                    gbFive.BeginAnimation(GroupBox.WidthProperty, widthAnim);
-                    gbFive.BeginAnimation(UIElement.OpacityProperty, opacityAnim);
                 }
+            }
+        }
+
+        private async Task GetAnimeInfo()
+        {
+            // Send a request to the Jikan API to get the anime information
+            if (previousEntry != TextAnimeTB)
+            {
+                // Clear AnimeResponse
+                animeResponse = null;
+                animeResponse = await jikan.SearchAnimeAsync(TextAnimeTB);
+            }
+
+            // Wait for the simulated delay to finish
+            //await progressTask;               
+
+            // If the anime is not found, display a snackbar message
+            if (animeResponse.Data.Count != 0)
+            {
+                var firstAnime = animeResponse.Data.Skip(animeCounter).First();
+                var secondAnime = animeResponse.Data.Skip(animeCounter + 1).First();
+                var thirdAnime = animeResponse.Data.Skip(animeCounter + 2).First();
+                var fourthAnime = animeResponse.Data.Skip(animeCounter + 3).First();
+                var fifthAnime = animeResponse.Data.Skip(animeCounter + 4).First();
+
+                // Display the anime information in the groupbox
+                gbOne.Header = firstAnime.Title;
+                gbTwo.Header = secondAnime.Title;
+                gbThree.Header = thirdAnime.Title;
+                gbFour.Header = fourthAnime.Title;
+                gbFive.Header = fifthAnime.Title;
+
+                // Fetch the anime images
+                var imageResponseFirst = await jikan.GetAnimePicturesAsync((long)firstAnime.MalId);
+                var imageUrlFirst = imageResponseFirst.Data.First().JPG.ImageUrl;
+                var firstAnimeGenres = firstAnime.Genres.Select(g => g.Name).ToImmutableList();
+
+                var imageResponseSecond = await jikan.GetAnimePicturesAsync((long)secondAnime.MalId);
+                var imageUrlSecond = imageResponseSecond.Data.First().JPG.ImageUrl;
+                var secondAnimeGenres = secondAnime.Genres.Select(g => g.Name).ToImmutableList();
+
+                var imageResponseThird = await jikan.GetAnimePicturesAsync((long)thirdAnime.MalId);
+                var imageUrlThird = imageResponseThird.Data.First().JPG.ImageUrl;
+                var thirdAnimeGenres = thirdAnime.Genres.Select(g => g.Name).ToImmutableList();
+
+                var imageResponseFourth = await jikan.GetAnimePicturesAsync((long)fourthAnime.MalId);
+                var imageUrlFourth = imageResponseFourth.Data.First().JPG.ImageUrl;
+                var fourthAnimeGenres = fourthAnime.Genres.Select(g => g.Name).ToImmutableList();
+
+                var imageResponseFifth = await jikan.GetAnimePicturesAsync((long)fifthAnime.MalId);
+                var imageUrlFifth = imageResponseFifth.Data.First().JPG.ImageUrl;
+                var fifthAnimeGenres = fifthAnime.Genres.Select(g => g.Name).ToImmutableList();
+
+                var imageWandH = 160;
+
+                // Add the image and text to each groupbox
+                SourceGBOne = new BitmapImage(new Uri(imageUrlFirst, UriKind.Absolute));
+                imgOne.Width = imageWandH;
+                imgOne.Height = imageWandH;
+                var genreListOne = string.Join(", ", firstAnimeGenres);
+                TextGBOne = "MAL Rating: " + firstAnime.Score + "\nGenres: " + genreListOne;
+
+                SourceGBTwo = new BitmapImage(new Uri(imageUrlSecond, UriKind.Absolute));
+                imgTwo.Width = imageWandH;
+                imgTwo.Height = imageWandH;
+                var genreListTwo = string.Join(", ", secondAnimeGenres);
+                TextGBTwo = "MAL Rating: " + secondAnime.Score + "\nGenres: " + genreListTwo;
+
+                SourceGBThree = new BitmapImage(new Uri(imageUrlThird, UriKind.Absolute));
+                imgThree.Width = imageWandH;
+                imgThree.Height = imageWandH;
+                var genreListThree = string.Join(", ", thirdAnimeGenres);
+                TextGBThree = "MAL Rating: " + thirdAnime.Score + "\nGenres: " + genreListThree;
+
+                SourceGBFour = new BitmapImage(new Uri(imageUrlFourth, UriKind.Absolute));
+                imgFour.Width = imageWandH;
+                imgFour.Height = imageWandH;
+                var genreListFour = string.Join(", ", fourthAnimeGenres);
+                TextGBFour = "MAL Rating: " + fourthAnime.Score + "\nGenres: " + genreListFour;
+
+                SourceGBFive = new BitmapImage(new Uri(imageUrlFifth, UriKind.Absolute));
+                imgFive.Width = imageWandH;
+                imgFive.Height = imageWandH;
+                var genreListFive = string.Join(", ", fifthAnimeGenres);
+                TextGBFive = "MAL Rating: " + fifthAnime.Score + "\nGenres: " + genreListFive;
+
+                HandleAnimations();
+
+                // Show the Backward and Forward buttons
+                DoubleAnimation opacityAnimationBBLess = new DoubleAnimation(0.5, TimeSpan.FromSeconds(0.8));
+                DoubleAnimation opacityAnimationBBMore = new DoubleAnimation(1, TimeSpan.FromSeconds(0.8));
+                if (animeCounter == 0)
+                {
+                    backwardB.BeginAnimation(Button.OpacityProperty, opacityAnimationBBLess);
+                    backwardB.IsEnabled = false;
+                }
+                else
+                {
+                    backwardB.BeginAnimation(Button.OpacityProperty, opacityAnimationBBMore);
+                    backwardB.IsEnabled = true;
+                }
+                if (animeCounter == 45)
+                {
+                    forwardB.BeginAnimation(Button.OpacityProperty, opacityAnimationBBLess);
+                    forwardB.IsEnabled = false;
+                }
+                else
+                {
+                    forwardB.BeginAnimation(Button.OpacityProperty, opacityAnimationBBMore);
+                    forwardB.IsEnabled = true;
+                }
+            }
+
+            previousEntry = TextAnimeTB;
+        }
+
+        private async void HandleAnimations()
+        {
+            if (animeCounter == 0)
+            {
+                // Hide the progress bar
+                DoubleAnimation opacityAnimation2 = new DoubleAnimation(0, TimeSpan.FromSeconds(0.8));
+                opacityAnimation2.Completed += (s, e) => ProgressBar.Visibility = Visibility.Hidden;
+                opacityAnimation2.Completed += (s, e) => ProgressBar.Value = 0;
+                ProgressBar.BeginAnimation(ProgressBar.OpacityProperty, opacityAnimation2);
+
+                // Show the groupboxes with a width, height, and opacity animation with a delay between each
+                DoubleAnimation heightAnim = new DoubleAnimation(baseGBHeight, TimeSpan.FromSeconds(0.35));
+                DoubleAnimation widthAnim = new DoubleAnimation(baseGBWidth, TimeSpan.FromSeconds(0.35));
+                DoubleAnimation opacityAnim = new DoubleAnimation(0.5, TimeSpan.FromSeconds(0.35));
+
+                gbOne.BeginAnimation(GroupBox.HeightProperty, heightAnim);
+                gbOne.BeginAnimation(GroupBox.WidthProperty, widthAnim);
+                gbOne.BeginAnimation(UIElement.OpacityProperty, opacityAnim);
+
+                await Task.Delay(200);
+
+                gbTwo.BeginAnimation(GroupBox.HeightProperty, heightAnim);
+                gbTwo.BeginAnimation(GroupBox.WidthProperty, widthAnim);
+                gbTwo.BeginAnimation(UIElement.OpacityProperty, opacityAnim);
+
+                await Task.Delay(200);
+
+                gbThree.BeginAnimation(GroupBox.HeightProperty, heightAnim);
+                gbThree.BeginAnimation(GroupBox.WidthProperty, widthAnim);
+                gbThree.BeginAnimation(UIElement.OpacityProperty, opacityAnim);
+
+                await Task.Delay(200);
+
+                gbFour.BeginAnimation(GroupBox.HeightProperty, heightAnim);
+                gbFour.BeginAnimation(GroupBox.WidthProperty, widthAnim);
+                gbFour.BeginAnimation(UIElement.OpacityProperty, opacityAnim);
+
+                await Task.Delay(200);
+
+                gbFive.BeginAnimation(GroupBox.HeightProperty, heightAnim);
+                gbFive.BeginAnimation(GroupBox.WidthProperty, widthAnim);
+                gbFive.BeginAnimation(UIElement.OpacityProperty, opacityAnim);
+            }
+            else
+            {
+                // Different animations for the groupboxes
             }
         }
 
@@ -1091,6 +1172,17 @@ namespace WhatsNextWPF
             }
         }
 
+        private void Backward_Click(object sender, RoutedEventArgs e)
+        {
+            animeCounter -= 5;
+            GetAnimeInfo();
+        }
+
+        private void Forward_Click(object sender, RoutedEventArgs e)
+        {
+            animeCounter += 5;
+            GetAnimeInfo();
+        }
 
         private void SelectAnime_Click(object sender, RoutedEventArgs e)
         {
