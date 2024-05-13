@@ -16,6 +16,7 @@ using System.DirectoryServices;
 using System.Collections.Immutable;
 using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
+using System.Runtime.CompilerServices;
 
 namespace WhatsNextWPF
 {
@@ -30,6 +31,19 @@ namespace WhatsNextWPF
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        protected bool SetProperty<T>(ref T backingStore, T value, [CallerMemberName] string propertyName = "", Action onChanged = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(backingStore, value))
+            {
+                return false;
+            }
+
+            backingStore = value;
+            onChanged?.Invoke();
+            OnPropertyChanged(propertyName);
+            return true;
         }
 
         private string _textAnimeTB = "";
@@ -785,6 +799,13 @@ namespace WhatsNextWPF
             }
         }
 
+        private float _backwardBVal = 0;
+        public float BackwardBVal
+        {
+            get => _backwardBVal;
+            set => SetProperty(ref _backwardBVal, value);
+        }
+
         private float _opacityBB = 0f;
         public float OpacityBB
         {
@@ -811,6 +832,13 @@ namespace WhatsNextWPF
                     OnPropertyChanged(nameof(EnabledBB));
                 }
             }
+        }
+
+        private float _forwardBVal = 5;
+        public float ForwardBVal
+        {
+            get => _forwardBVal;
+            private set => SetProperty(ref _forwardBVal, value);
         }
 
         private float _opacityFB = 0f;
@@ -842,6 +870,7 @@ namespace WhatsNextWPF
         }
 
         public int animeCounter = 0;
+        public int animeTotal = 0;
 
         /* ========== Jikan Client ========== */
         IJikan jikan;
@@ -961,6 +990,7 @@ namespace WhatsNextWPF
 
                 // Set the anime counter to 0
                 animeCounter = 0;
+                animeTotal = animeResponse.Data.Count;
             }
 
             // Wait for the simulated delay to finish
@@ -987,79 +1017,160 @@ namespace WhatsNextWPF
                 gbFour.Header = fourthAnime.Title;
                 gbFive.Header = fifthAnime.Title;
 
-                // Fetch the anime images
-                var imageResponseFirst = await jikan.GetAnimePicturesAsync((long)firstAnime.MalId);
-                var imageUrlFirst = imageResponseFirst.Data.First().JPG.ImageUrl;
-                var firstAnimeGenres = firstAnime.Genres.Select(g => g.Name).ToImmutableList();
-                if (firstAnimeGenres.Count == 0)
-                {
-                    firstAnimeGenres = ImmutableList.Create("None");
-                }
-
-                var imageResponseSecond = await jikan.GetAnimePicturesAsync((long)secondAnime.MalId);
-                var imageUrlSecond = imageResponseSecond.Data.First().JPG.ImageUrl;
-                var secondAnimeGenres = secondAnime.Genres.Select(g => g.Name).ToImmutableList();
-                if (secondAnimeGenres.Count == 0)
-                {
-                    secondAnimeGenres = ImmutableList.Create("None");
-                }
-
-                var imageResponseThird = await jikan.GetAnimePicturesAsync((long)thirdAnime.MalId);
-                var imageUrlThird = imageResponseThird.Data.First().JPG.ImageUrl;
-                var thirdAnimeGenres = thirdAnime.Genres.Select(g => g.Name).ToImmutableList();
-                if (thirdAnimeGenres.Count == 0)
-                {
-                    thirdAnimeGenres = ImmutableList.Create("None");
-                }
-
-                var imageResponseFourth = await jikan.GetAnimePicturesAsync((long)fourthAnime.MalId);
-                var imageUrlFourth = imageResponseFourth.Data.First().JPG.ImageUrl;
-                var fourthAnimeGenres = fourthAnime.Genres.Select(g => g.Name).ToImmutableList();
-                if (fourthAnimeGenres.Count == 0)
-                {
-                    fourthAnimeGenres = ImmutableList.Create("None");
-                }
-
-                var imageResponseFifth = await jikan.GetAnimePicturesAsync((long)fifthAnime.MalId);
-                var imageUrlFifth = imageResponseFifth.Data.First().JPG.ImageUrl;
-                var fifthAnimeGenres = fifthAnime.Genres.Select(g => g.Name).ToImmutableList();
-                if (fifthAnimeGenres.Count == 0)
-                {
-                    fifthAnimeGenres = ImmutableList.Create("None");
-                }
-
                 var imageWandH = 160;
 
-                // Add the image and text to each groupbox
-                SourceGBOne = new BitmapImage(new Uri(imageUrlFirst, UriKind.Absolute));
-                imgOne.Width = imageWandH;
-                imgOne.Height = imageWandH;
-                var genreListOne = string.Join(", ", firstAnimeGenres);
-                TextGBOne = "MAL Rating: " + firstAnime.Score + "\nGenres: " + genreListOne;
+                // if there is data in the first anime, display the information
+                if (firstAnime != null)
+                {
+                    gbOne.Visibility = Visibility.Visible;
 
-                SourceGBTwo = new BitmapImage(new Uri(imageUrlSecond, UriKind.Absolute));
-                imgTwo.Width = imageWandH;
-                imgTwo.Height = imageWandH;
-                var genreListTwo = string.Join(", ", secondAnimeGenres);
-                TextGBTwo = "MAL Rating: " + secondAnime.Score + "\nGenres: " + genreListTwo;
+                    // Fetch the anime images
+                    var imageResponseFirst = await jikan.GetAnimePicturesAsync((long)firstAnime.MalId);
+                    var image = imageResponseFirst.Data.FirstOrDefault();
+                    var imageUrlFirst = image?.JPG.ImageUrl ?? "C:\\Users\\Carter\\Desktop\\Coding Projects\\WhatsNext\\WhatsNextWPF\\Resources\\Default.jpg";
+                    var firstAnimeGenres = firstAnime.Genres.Select(g => g.Name).ToImmutableList() ?? ImmutableList.Create("None");
+                    if (firstAnimeGenres.Count == 0)
+                    {
+                        firstAnimeGenres = ImmutableList.Create("None");
+                    }
 
-                SourceGBThree = new BitmapImage(new Uri(imageUrlThird, UriKind.Absolute));
-                imgThree.Width = imageWandH;
-                imgThree.Height = imageWandH;
-                var genreListThree = string.Join(", ", thirdAnimeGenres);
-                TextGBThree = "MAL Rating: " + thirdAnime.Score + "\nGenres: " + genreListThree;
+                    // Add the image and text to each groupbox
+                    SourceGBOne = new BitmapImage(new Uri(imageUrlFirst, UriKind.Absolute));
+                    imgOne.Width = imageWandH;
+                    imgOne.Height = imageWandH;
+                    var genreListOne = string.Join(", ", firstAnimeGenres);
+                    TextGBOne = "MAL Rating: " + firstAnime.Score + "\nGenres: " + genreListOne;
+                } 
+                else
+                {
+                    SourceGBOne = new BitmapImage(new Uri("C:\\Users\\Carter\\Desktop\\Coding Projects\\WhatsNext\\WhatsNextWPF\\Resources\\Default.jpg", UriKind.Absolute));
+                    imgOne.Width = imageWandH;
+                    imgOne.Height = imageWandH;
+                    TextGBOne = "MAL Rating: 0\nGenres: None";
 
-                SourceGBFour = new BitmapImage(new Uri(imageUrlFourth, UriKind.Absolute));
-                imgFour.Width = imageWandH;
-                imgFour.Height = imageWandH;
-                var genreListFour = string.Join(", ", fourthAnimeGenres);
-                TextGBFour = "MAL Rating: " + fourthAnime.Score + "\nGenres: " + genreListFour;
+                    // Collapse the groupbox if there is no data
+                    gbOne.Visibility = Visibility.Collapsed;
+                }
 
-                SourceGBFive = new BitmapImage(new Uri(imageUrlFifth, UriKind.Absolute));
-                imgFive.Width = imageWandH;
-                imgFive.Height = imageWandH;
-                var genreListFive = string.Join(", ", fifthAnimeGenres);
-                TextGBFive = "MAL Rating: " + fifthAnime.Score + "\nGenres: " + genreListFive;
+                if (secondAnime != null)
+                {
+                    gbTwo.Visibility = Visibility.Visible;
+
+                    var imageResponseSecond = await jikan.GetAnimePicturesAsync((long)secondAnime.MalId);
+                    var image = imageResponseSecond.Data.FirstOrDefault();
+                    var imageUrlSecond = image?.JPG.ImageUrl ?? "C:\\Users\\Carter\\Desktop\\Coding Projects\\WhatsNext\\WhatsNextWPF\\Resources\\Default.jpg";
+                    var secondAnimeGenres = secondAnime.Genres.Select(g => g.Name).ToImmutableList() ?? ImmutableList.Create("None");
+                    if (secondAnimeGenres.Count == 0)
+                    {
+                        secondAnimeGenres = ImmutableList.Create("None");
+                    }
+
+                    SourceGBTwo = new BitmapImage(new Uri(imageUrlSecond, UriKind.Absolute));
+                    imgTwo.Width = imageWandH;
+                    imgTwo.Height = imageWandH;
+                    var genreListTwo = string.Join(", ", secondAnimeGenres);
+                    TextGBTwo = "MAL Rating: " + secondAnime.Score + "\nGenres: " + genreListTwo;
+                }
+                else
+                {
+                    SourceGBTwo = new BitmapImage(new Uri("C:\\Users\\Carter\\Desktop\\Coding Projects\\WhatsNext\\WhatsNextWPF\\Resources\\Default.jpg", UriKind.Absolute));
+                    imgTwo.Width = imageWandH;
+                    imgTwo.Height = imageWandH;
+                    TextGBTwo = "MAL Rating: 0\nGenres: None";
+
+                    // Collapse the groupbox if there is no data
+                    gbTwo.Visibility = Visibility.Collapsed;
+                }
+
+                if (thirdAnime != null)
+                {
+                    gbThree.Visibility = Visibility.Visible;
+
+                    var imageResponseThird = await jikan.GetAnimePicturesAsync((long)thirdAnime.MalId);
+                    var image = imageResponseThird.Data.FirstOrDefault();
+                    var imageUrlThird = image?.JPG.ImageUrl ?? "C:\\Users\\Carter\\Desktop\\Coding Projects\\WhatsNext\\WhatsNextWPF\\Resources\\Default.jpg";
+                    var thirdAnimeGenres = thirdAnime.Genres.Select(g => g.Name).ToImmutableList() ?? ImmutableList.Create("None");
+                    if (thirdAnimeGenres.Count == 0)
+                    {
+                        thirdAnimeGenres = ImmutableList.Create("None");
+                    }
+
+                    SourceGBThree = new BitmapImage(new Uri(imageUrlThird, UriKind.Absolute));
+                    imgThree.Width = imageWandH;
+                    imgThree.Height = imageWandH;
+                    var genreListThree = string.Join(", ", thirdAnimeGenres);
+                    TextGBThree = "MAL Rating: " + thirdAnime.Score + "\nGenres: " + genreListThree;
+                }
+                else
+                {
+                    SourceGBThree = new BitmapImage(new Uri("C:\\Users\\Carter\\Desktop\\Coding Projects\\WhatsNext\\WhatsNextWPF\\Resources\\Default.jpg", UriKind.Absolute));
+                    imgThree.Width = imageWandH;
+                    imgThree.Height = imageWandH;
+                    TextGBThree = "MAL Rating: 0\nGenres: None";
+
+                    // Collapse the groupbox if there is no data
+                    gbThree.Visibility = Visibility.Collapsed;
+                }
+
+                if (fourthAnime != null)
+                {
+                    gbFour.Visibility = Visibility.Visible;
+
+                    var imageResponseFourth = await jikan.GetAnimePicturesAsync((long)fourthAnime.MalId);
+                    var image = imageResponseFourth.Data.FirstOrDefault();
+                    var imageUrlFourth = image?.JPG.ImageUrl ?? "C:\\Users\\Carter\\Desktop\\Coding Projects\\WhatsNext\\WhatsNextWPF\\Resources\\Default.jpg";
+                    var fourthAnimeGenres = fourthAnime.Genres.Select(g => g.Name).ToImmutableList() ?? ImmutableList.Create("None");
+                    if (fourthAnimeGenres.Count == 0)
+                    {
+                        fourthAnimeGenres = ImmutableList.Create("None");
+                    }
+
+                    SourceGBFour = new BitmapImage(new Uri(imageUrlFourth, UriKind.Absolute));
+                    imgFour.Width = imageWandH;
+                    imgFour.Height = imageWandH;
+                    var genreListFour = string.Join(", ", fourthAnimeGenres);
+                    TextGBFour = "MAL Rating: " + fourthAnime.Score + "\nGenres: " + genreListFour;
+                } 
+                else
+                {
+                    SourceGBFour = new BitmapImage(new Uri("C:\\Users\\Carter\\Desktop\\Coding Projects\\WhatsNext\\WhatsNextWPF\\Resources\\Default.jpg", UriKind.Absolute));
+                    imgFour.Width = imageWandH;
+                    imgFour.Height = imageWandH;
+                    TextGBFour = "MAL Rating: 0\nGenres: None";
+
+                    // Collapse the groupbox if there is no data
+                    gbFour.Visibility = Visibility.Collapsed;
+                }
+
+                if (fifthAnime != null)
+                {
+                    gbFive.Visibility = Visibility.Visible;
+
+                    var imageResponseFifth = await jikan.GetAnimePicturesAsync((long)fifthAnime.MalId);
+                    var image = imageResponseFifth.Data.FirstOrDefault();
+                    var imageUrlFifth = image?.JPG.ImageUrl ?? "C:\\Users\\Carter\\Desktop\\Coding Projects\\WhatsNext\\WhatsNextWPF\\Resources\\Default.jpg";
+                    var fifthAnimeGenres = fifthAnime.Genres.Select(g => g.Name).ToImmutableList() ?? ImmutableList.Create("None");
+                    if (fifthAnimeGenres.Count == 0)
+                    {
+                        fifthAnimeGenres = ImmutableList.Create("None");
+                    }
+
+                    SourceGBFive = new BitmapImage(new Uri(imageUrlFifth, UriKind.Absolute));
+                    imgFive.Width = imageWandH;
+                    imgFive.Height = imageWandH;
+                    var genreListFive = string.Join(", ", fifthAnimeGenres);
+                    TextGBFive = "MAL Rating: " + fifthAnime.Score + "\nGenres: " + genreListFive;
+                }
+                else
+                {
+                    SourceGBFive = new BitmapImage(new Uri("C:\\Users\\Carter\\Desktop\\Coding Projects\\WhatsNext\\WhatsNextWPF\\Resources\\Default.jpg", UriKind.Absolute));
+                    imgFive.Width = imageWandH;
+                    imgFive.Height = imageWandH;
+                    TextGBFive = "MAL Rating: 0\nGenres: None";
+
+                    // Collapse the groupbox if there is no data
+                    gbFive.Visibility = Visibility.Collapsed;
+                }
 
                 if (animeCounter == 0 && previousEntry == "")
                 {
@@ -1095,7 +1206,7 @@ namespace WhatsNextWPF
                     backwardB.IsEnabled = true;
                     backwardB.Visibility = Visibility.Visible;
                 }
-                if (animeCounter == 45)
+                if (animeCounter >= animeTotal - 5)
                 {
                     forwardB.BeginAnimation(Button.OpacityProperty, opacityAnimationBBLess);
                     forwardB.IsEnabled = false;
@@ -1294,25 +1405,31 @@ namespace WhatsNextWPF
         private void Backward_Click(object sender, RoutedEventArgs e)
         {
             animeCounter -= 5;
+            int numAnime = (animeCounter * 100) / (animeTotal);
+            BackwardBVal = numAnime;
+            ForwardBVal = numAnime + 5;
             GetAnimeInfo();
         }
 
         private void Forward_Click(object sender, RoutedEventArgs e)
         {
             animeCounter += 5;
+            int numAnime = (animeCounter * 100) / (animeTotal);
+            BackwardBVal = numAnime;
+            ForwardBVal = numAnime + 5;
             GetAnimeInfo();
         }
 
         private void SelectAnime_Click(object sender, RoutedEventArgs e)
         {
             // On click, get the information for the anime of the parent groupbox
-            GroupBox groupBox = (GroupBox)((StackPanel)((Button)sender).Parent).Parent;
+            GroupBox groupBox = (GroupBox)((Grid)((Button)sender).Parent).Parent;
             HeaderGBOne = groupBox.Header.ToString();
 
             // The groupbox contains a child stackpanel which contains the image and textblock
-            StackPanel stackPanel = (StackPanel)groupBox.Content;
-            System.Windows.Controls.Image image = (System.Windows.Controls.Image)stackPanel.Children[0];
-            TextBlock textBlock = (TextBlock)stackPanel.Children[1];
+            Grid grid = (Grid)groupBox.Content;
+            System.Windows.Controls.Image image = (System.Windows.Controls.Image)grid.Children[1];
+            TextBlock textBlock = (TextBlock)grid.Children[2];
             SourceGBOne = image.Source;
 
             Button button = (Button)sender;
