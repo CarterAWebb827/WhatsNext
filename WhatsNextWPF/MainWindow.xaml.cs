@@ -1011,11 +1011,11 @@ namespace WhatsNextWPF
                 var fifthAnime = animeResponse.Data.Skip(animeCounter + 4).First();
 
                 // Display the anime information in the groupbox
-                gbOne.Header = firstAnime.Title;
-                gbTwo.Header = secondAnime.Title;
-                gbThree.Header = thirdAnime.Title;
-                gbFour.Header = fourthAnime.Title;
-                gbFive.Header = fifthAnime.Title;
+                gbOne.Header = firstAnime.Title ?? "None";
+                gbTwo.Header = secondAnime.Title ?? "None";
+                gbThree.Header = thirdAnime.Title ?? "None";
+                gbFour.Header = fourthAnime.Title ?? "None";
+                gbFive.Header = fifthAnime.Title ?? "None";
 
                 var imageWandH = 160;
 
@@ -1033,20 +1033,22 @@ namespace WhatsNextWPF
                     {
                         firstAnimeGenres = ImmutableList.Create("None");
                     }
+                    var firstAnimeType = firstAnime.Type ?? "None";
+                    var firstAnimeAgeRating = firstAnime.Rating ?? "None";
 
                     // Add the image and text to each groupbox
                     SourceGBOne = new BitmapImage(new Uri(imageUrlFirst, UriKind.Absolute));
                     imgOne.Width = imageWandH;
                     imgOne.Height = imageWandH;
                     var genreListOne = string.Join(", ", firstAnimeGenres);
-                    TextGBOne = "MAL Rating: " + firstAnime.Score + "\nGenres: " + genreListOne;
+                    TextGBOne = "MAL Rating: " + firstAnime.Score + "\nGenres: " + genreListOne + "\nType: " + firstAnimeType + "\nAge Rating: " + firstAnimeAgeRating;
                 } 
                 else
                 {
                     SourceGBOne = new BitmapImage(new Uri("C:\\Users\\Carter\\Desktop\\Coding Projects\\WhatsNext\\WhatsNextWPF\\Resources\\Default.jpg", UriKind.Absolute));
                     imgOne.Width = imageWandH;
                     imgOne.Height = imageWandH;
-                    TextGBOne = "MAL Rating: 0\nGenres: None";
+                    TextGBOne = "MAL Rating: 0\nGenres: None" + "\nType: None\nAge Rating: None";
 
                     // Collapse the groupbox if there is no data
                     gbOne.Visibility = Visibility.Collapsed;
@@ -1064,19 +1066,21 @@ namespace WhatsNextWPF
                     {
                         secondAnimeGenres = ImmutableList.Create("None");
                     }
+                    var secondAnimeType = secondAnime.Type ?? "None";
+                    var secondAnimeAgeRating = secondAnime.Rating ?? "None";
 
                     SourceGBTwo = new BitmapImage(new Uri(imageUrlSecond, UriKind.Absolute));
                     imgTwo.Width = imageWandH;
                     imgTwo.Height = imageWandH;
                     var genreListTwo = string.Join(", ", secondAnimeGenres);
-                    TextGBTwo = "MAL Rating: " + secondAnime.Score + "\nGenres: " + genreListTwo;
+                    TextGBTwo = "MAL Rating: " + secondAnime.Score + "\nGenres: " + genreListTwo + "\nType: " + secondAnimeType + "\nAge Rating: " + secondAnimeAgeRating;
                 }
                 else
                 {
                     SourceGBTwo = new BitmapImage(new Uri("C:\\Users\\Carter\\Desktop\\Coding Projects\\WhatsNext\\WhatsNextWPF\\Resources\\Default.jpg", UriKind.Absolute));
                     imgTwo.Width = imageWandH;
                     imgTwo.Height = imageWandH;
-                    TextGBTwo = "MAL Rating: 0\nGenres: None";
+                    TextGBTwo = "MAL Rating: 0\nGenres: None" + "\nType: None\nAge Rating: None";
 
                     // Collapse the groupbox if there is no data
                     gbTwo.Visibility = Visibility.Collapsed;
@@ -1094,19 +1098,21 @@ namespace WhatsNextWPF
                     {
                         thirdAnimeGenres = ImmutableList.Create("None");
                     }
+                    var thirdAnimeType = thirdAnime.Type ?? "None";
+                    var thirdAnimeAgeRating = thirdAnime.Rating ?? "None";
 
                     SourceGBThree = new BitmapImage(new Uri(imageUrlThird, UriKind.Absolute));
                     imgThree.Width = imageWandH;
                     imgThree.Height = imageWandH;
                     var genreListThree = string.Join(", ", thirdAnimeGenres);
-                    TextGBThree = "MAL Rating: " + thirdAnime.Score + "\nGenres: " + genreListThree;
+                    TextGBThree = "MAL Rating: " + thirdAnime.Score + "\nGenres: " + genreListThree + "\nType: " + thirdAnimeType + "\nAge Rating: " + thirdAnimeAgeRating;
                 }
                 else
                 {
                     SourceGBThree = new BitmapImage(new Uri("C:\\Users\\Carter\\Desktop\\Coding Projects\\WhatsNext\\WhatsNextWPF\\Resources\\Default.jpg", UriKind.Absolute));
                     imgThree.Width = imageWandH;
                     imgThree.Height = imageWandH;
-                    TextGBThree = "MAL Rating: 0\nGenres: None";
+                    TextGBThree = "MAL Rating: 0\nGenres: None" + "\nType: None\nAge Rating: None";
 
                     // Collapse the groupbox if there is no data
                     gbThree.Visibility = Visibility.Collapsed;
@@ -1124,19 +1130,21 @@ namespace WhatsNextWPF
                     {
                         fourthAnimeGenres = ImmutableList.Create("None");
                     }
+                    var fourthAnimeType = fourthAnime.Type ?? "None";
+                    var fourthAnimeAgeRating = fourthAnime.Rating ?? "None";
 
                     SourceGBFour = new BitmapImage(new Uri(imageUrlFourth, UriKind.Absolute));
                     imgFour.Width = imageWandH;
                     imgFour.Height = imageWandH;
                     var genreListFour = string.Join(", ", fourthAnimeGenres);
-                    TextGBFour = "MAL Rating: " + fourthAnime.Score + "\nGenres: " + genreListFour;
+                    TextGBFour = "MAL Rating: " + fourthAnime.Score + "\nGenres: " + genreListFour + "\nType: " + fourthAnimeType + "\nAge Rating: " + fourthAnimeAgeRating;
                 } 
                 else
                 {
                     SourceGBFour = new BitmapImage(new Uri("C:\\Users\\Carter\\Desktop\\Coding Projects\\WhatsNext\\WhatsNextWPF\\Resources\\Default.jpg", UriKind.Absolute));
                     imgFour.Width = imageWandH;
                     imgFour.Height = imageWandH;
-                    TextGBFour = "MAL Rating: 0\nGenres: None";
+                    TextGBFour = "MAL Rating: 0\nGenres: None" + "\nType: None\nAge Rating: None";
 
                     // Collapse the groupbox if there is no data
                     gbFour.Visibility = Visibility.Collapsed;
@@ -1154,19 +1162,21 @@ namespace WhatsNextWPF
                     {
                         fifthAnimeGenres = ImmutableList.Create("None");
                     }
+                    var fifthAnimeType = fifthAnime.Type ?? "None";
+                    var fifthAnimeAgeRating = fifthAnime.Rating ?? "None";
 
                     SourceGBFive = new BitmapImage(new Uri(imageUrlFifth, UriKind.Absolute));
                     imgFive.Width = imageWandH;
                     imgFive.Height = imageWandH;
                     var genreListFive = string.Join(", ", fifthAnimeGenres);
-                    TextGBFive = "MAL Rating: " + fifthAnime.Score + "\nGenres: " + genreListFive;
+                    TextGBFive = "MAL Rating: " + fifthAnime.Score + "\nGenres: " + genreListFive + "\nType: " + fifthAnimeType + "\nAge Rating: " + fifthAnimeAgeRating;
                 }
                 else
                 {
                     SourceGBFive = new BitmapImage(new Uri("C:\\Users\\Carter\\Desktop\\Coding Projects\\WhatsNext\\WhatsNextWPF\\Resources\\Default.jpg", UriKind.Absolute));
                     imgFive.Width = imageWandH;
                     imgFive.Height = imageWandH;
-                    TextGBFive = "MAL Rating: 0\nGenres: None";
+                    TextGBFive = "MAL Rating: 0\nGenres: None" + "\nType: None\nAge Rating: None";
 
                     // Collapse the groupbox if there is no data
                     gbFive.Visibility = Visibility.Collapsed;
