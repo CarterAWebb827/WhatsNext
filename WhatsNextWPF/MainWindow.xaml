@@ -22,8 +22,9 @@
             x:Name="SelectionSP" 
             Visibility="Visible" 
             Opacity="1">
-            <TabControl HorizontalContentAlignment="Stretch"
-                    Style="{StaticResource MaterialDesignFilledUniformTabControl}">
+            <TabControl 
+                HorizontalContentAlignment="Stretch"
+                Style="{StaticResource MaterialDesignFilledUniformTabControl}">
                 <TabItem Header="Anime">
                     <StackPanel Height="736">
                         <StackPanel Orientation="Vertical">
@@ -113,6 +114,12 @@
                                             <RowDefinition Height="*" />
                                             <RowDefinition Height="80" />
                                         </Grid.RowDefinitions>
+                                        <ProgressBar
+                                            x:Name="loadOne"
+                                            Visibility="Collapsed"
+                                            Grid.RowSpan="2"
+                                            IsIndeterminate="True"
+                                            Style="{StaticResource MaterialDesignCircularProgressBar}"/>
                                         <Image
                                                 x:Name="imgOne"
                                                 HorizontalAlignment="Center"
@@ -174,6 +181,12 @@
                                             <RowDefinition Height="*" />
                                             <RowDefinition Height="80" />
                                         </Grid.RowDefinitions>
+                                        <ProgressBar
+                                            x:Name="loadTwo"
+                                            Visibility="Collapsed"
+                                            Grid.RowSpan="2"
+                                            IsIndeterminate="True"
+                                            Style="{StaticResource MaterialDesignCircularProgressBar}"/>
                                         <Image
                                                 x:Name="imgTwo"
                                                 HorizontalAlignment="Center"
@@ -235,6 +248,12 @@
                                             <RowDefinition Height="*" />
                                             <RowDefinition Height="80" />
                                         </Grid.RowDefinitions>
+                                        <ProgressBar
+                                            x:Name="loadThree"
+                                            Visibility="Collapsed"
+                                            Grid.RowSpan="2"
+                                            IsIndeterminate="True"
+                                            Style="{StaticResource MaterialDesignCircularProgressBar}"/>
                                         <Image
                                                 x:Name="imgThree"
                                                 HorizontalAlignment="Center"
@@ -296,6 +315,12 @@
                                             <RowDefinition Height="*" />
                                             <RowDefinition Height="80" />
                                         </Grid.RowDefinitions>
+                                        <ProgressBar
+                                            x:Name="loadFour"
+                                            Visibility="Collapsed"
+                                            Grid.RowSpan="2"
+                                            IsIndeterminate="True"
+                                            Style="{StaticResource MaterialDesignCircularProgressBar}"/>
                                         <Image
                                                 x:Name="imgFour"
                                                 HorizontalAlignment="Center"
@@ -357,6 +382,12 @@
                                             <RowDefinition Height="*" />
                                             <RowDefinition Height="80" />
                                         </Grid.RowDefinitions>
+                                        <ProgressBar
+                                            x:Name="loadFive"
+                                            Visibility="Collapsed"
+                                            Grid.RowSpan="2"
+                                            IsIndeterminate="True"
+                                            Style="{StaticResource MaterialDesignCircularProgressBar}"/>
                                         <Image
                                                 x:Name="imgFive"
                                                 HorizontalAlignment="Center"

@@ -14,6 +14,8 @@ using System.Threading.Tasks;
 using JikanDotNet;
 using System.DirectoryServices;
 using System.Collections.Immutable;
+using MaterialDesignColors;
+using MaterialDesignThemes.Wpf;
 
 namespace WhatsNextWPF
 {
@@ -951,7 +953,14 @@ namespace WhatsNextWPF
             {
                 // Clear AnimeResponse
                 animeResponse = null;
+                if (previousEntry != "")
+                {
+                    ShowLoading();
+                }
                 animeResponse = await jikan.SearchAnimeAsync(TextAnimeTB);
+
+                // Set the anime counter to 0
+                animeCounter = 0;
             }
 
             // Wait for the simulated delay to finish
@@ -960,6 +969,11 @@ namespace WhatsNextWPF
             // If the anime is not found, display a snackbar message
             if (animeResponse.Data.Count != 0)
             {
+                if (animeCounter != 0)
+                {
+                    HandleAnimations();
+                }
+
                 var firstAnime = animeResponse.Data.Skip(animeCounter).First();
                 var secondAnime = animeResponse.Data.Skip(animeCounter + 1).First();
                 var thirdAnime = animeResponse.Data.Skip(animeCounter + 2).First();
@@ -977,22 +991,42 @@ namespace WhatsNextWPF
                 var imageResponseFirst = await jikan.GetAnimePicturesAsync((long)firstAnime.MalId);
                 var imageUrlFirst = imageResponseFirst.Data.First().JPG.ImageUrl;
                 var firstAnimeGenres = firstAnime.Genres.Select(g => g.Name).ToImmutableList();
+                if (firstAnimeGenres.Count == 0)
+                {
+                    firstAnimeGenres = ImmutableList.Create("None");
+                }
 
                 var imageResponseSecond = await jikan.GetAnimePicturesAsync((long)secondAnime.MalId);
                 var imageUrlSecond = imageResponseSecond.Data.First().JPG.ImageUrl;
                 var secondAnimeGenres = secondAnime.Genres.Select(g => g.Name).ToImmutableList();
+                if (secondAnimeGenres.Count == 0)
+                {
+                    secondAnimeGenres = ImmutableList.Create("None");
+                }
 
                 var imageResponseThird = await jikan.GetAnimePicturesAsync((long)thirdAnime.MalId);
                 var imageUrlThird = imageResponseThird.Data.First().JPG.ImageUrl;
                 var thirdAnimeGenres = thirdAnime.Genres.Select(g => g.Name).ToImmutableList();
+                if (thirdAnimeGenres.Count == 0)
+                {
+                    thirdAnimeGenres = ImmutableList.Create("None");
+                }
 
                 var imageResponseFourth = await jikan.GetAnimePicturesAsync((long)fourthAnime.MalId);
                 var imageUrlFourth = imageResponseFourth.Data.First().JPG.ImageUrl;
                 var fourthAnimeGenres = fourthAnime.Genres.Select(g => g.Name).ToImmutableList();
+                if (fourthAnimeGenres.Count == 0)
+                {
+                    fourthAnimeGenres = ImmutableList.Create("None");
+                }
 
                 var imageResponseFifth = await jikan.GetAnimePicturesAsync((long)fifthAnime.MalId);
                 var imageUrlFifth = imageResponseFifth.Data.First().JPG.ImageUrl;
                 var fifthAnimeGenres = fifthAnime.Genres.Select(g => g.Name).ToImmutableList();
+                if (fifthAnimeGenres.Count == 0)
+                {
+                    fifthAnimeGenres = ImmutableList.Create("None");
+                }
 
                 var imageWandH = 160;
 
@@ -1027,7 +1061,24 @@ namespace WhatsNextWPF
                 var genreListFive = string.Join(", ", fifthAnimeGenres);
                 TextGBFive = "MAL Rating: " + fifthAnime.Score + "\nGenres: " + genreListFive;
 
-                HandleAnimations();
+                if (animeCounter == 0 && previousEntry == "")
+                {
+                    HandleAnimations();
+                }
+                else if (animeCounter == 0)
+                {
+                    // Hide the progress bar
+                    DoubleAnimation opacityAnimation2 = new DoubleAnimation(0, TimeSpan.FromSeconds(0.8));
+                    opacityAnimation2.Completed += (s, e) => ProgressBar.Visibility = Visibility.Hidden;
+                    opacityAnimation2.Completed += (s, e) => ProgressBar.Value = 0;
+                    ProgressBar.BeginAnimation(ProgressBar.OpacityProperty, opacityAnimation2);
+
+                    EndLoading();
+                }
+                else
+                {
+                    EndLoading();
+                }
 
                 // Show the Backward and Forward buttons
                 DoubleAnimation opacityAnimationBBLess = new DoubleAnimation(0.5, TimeSpan.FromSeconds(0.8));
@@ -1036,21 +1087,37 @@ namespace WhatsNextWPF
                 {
                     backwardB.BeginAnimation(Button.OpacityProperty, opacityAnimationBBLess);
                     backwardB.IsEnabled = false;
+                    backwardB.Visibility = Visibility.Visible;
                 }
                 else
                 {
                     backwardB.BeginAnimation(Button.OpacityProperty, opacityAnimationBBMore);
                     backwardB.IsEnabled = true;
+                    backwardB.Visibility = Visibility.Visible;
                 }
                 if (animeCounter == 45)
                 {
                     forwardB.BeginAnimation(Button.OpacityProperty, opacityAnimationBBLess);
                     forwardB.IsEnabled = false;
+                    forwardB.Visibility = Visibility.Visible;
                 }
                 else
                 {
                     forwardB.BeginAnimation(Button.OpacityProperty, opacityAnimationBBMore);
                     forwardB.IsEnabled = true;
+                    forwardB.Visibility = Visibility.Visible;
+                }
+
+                // if there are less than 5 anime, disable the forward button
+                if (animeResponse.Data.Count <= 5)
+                {
+                    forwardB.IsEnabled = false;
+                    forwardB.BeginAnimation(Button.OpacityProperty, opacityAnimationBBLess);
+                    forwardB.Visibility = Visibility.Collapsed;
+
+                    backwardB.IsEnabled = false;
+                    backwardB.BeginAnimation(Button.OpacityProperty, opacityAnimationBBLess);
+                    backwardB.Visibility = Visibility.Collapsed;
                 }
             }
 
@@ -1102,8 +1169,60 @@ namespace WhatsNextWPF
             }
             else
             {
-                // Different animations for the groupboxes
+                // Collapse the other items in the groupbox and make loadOne visible
+                ShowLoading();
             }
+        }
+
+        private void ShowLoading()
+        {
+            imgOne.Visibility = Visibility.Collapsed;
+            bOne.Visibility = Visibility.Collapsed;
+            TextGBOne = "";
+            loadOne.Visibility = Visibility.Visible;
+
+            imgTwo.Visibility = Visibility.Collapsed;
+            bTwo.Visibility = Visibility.Collapsed;
+            TextGBTwo = "";
+            loadTwo.Visibility = Visibility.Visible;
+
+            imgThree.Visibility = Visibility.Collapsed;
+            bThree.Visibility = Visibility.Collapsed;
+            TextGBThree = "";
+            loadThree.Visibility = Visibility.Visible;
+
+            imgFour.Visibility = Visibility.Collapsed;
+            bFour.Visibility = Visibility.Collapsed;
+            TextGBFour = "";
+            loadFour.Visibility = Visibility.Visible;
+
+            imgFive.Visibility = Visibility.Collapsed;
+            bFive.Visibility = Visibility.Collapsed;
+            TextGBFive = "";
+            loadFive.Visibility = Visibility.Visible;
+        }
+
+        private void EndLoading()
+        {
+            loadOne.Visibility = Visibility.Collapsed;
+            imgOne.Visibility = Visibility.Visible;
+            bOne.Visibility = Visibility.Visible;
+
+            loadTwo.Visibility = Visibility.Collapsed;
+            imgTwo.Visibility = Visibility.Visible;
+            bTwo.Visibility = Visibility.Visible;
+
+            loadThree.Visibility = Visibility.Collapsed;
+            imgThree.Visibility = Visibility.Visible;
+            bThree.Visibility = Visibility.Visible;
+
+            loadFour.Visibility = Visibility.Collapsed;
+            imgFour.Visibility = Visibility.Visible;
+            bFour.Visibility = Visibility.Visible;
+
+            loadFive.Visibility = Visibility.Collapsed;
+            imgFive.Visibility = Visibility.Visible;
+            bFive.Visibility = Visibility.Visible;
         }
 
         private void MouseOver_GB(object sender, MouseEventArgs e)
@@ -1225,23 +1344,6 @@ namespace WhatsNextWPF
             DoubleAnimation slOpacityAnimation = new DoubleAnimation(1, TimeSpan.FromSeconds(0.8));
 
             SelectedSP.BeginAnimation(StackPanel.OpacityProperty, slOpacityAnimation);
-        }
-    }
-
-    public class ImagePathConverter : IValueConverter
-    {
-        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value is string imagePath && !string.IsNullOrEmpty(imagePath))
-            {
-                return new BitmapImage(new Uri(imagePath, UriKind.Absolute));
-            }
-            return null;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
         }
     }
 }
