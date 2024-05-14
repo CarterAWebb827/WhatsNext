@@ -869,12 +869,25 @@ namespace WhatsNextWPF
             }
         }
 
+        public enum AgeRatingSelected
+        {
+            SFW,
+            NSFW,
+            ALL
+        }
+
+        private AgeRatingSelected _ageRatingSelected = AgeRatingSelected.NSFW;
+        private AgeRatingSelected _previousAgeRating = AgeRatingSelected.ALL;
+
         public int animeCounter = 0;
         public int animeTotal = 0;
 
         /* ========== Jikan Client ========== */
         IJikan jikan;
         PaginatedJikanResponse<ICollection<Anime>> animeResponse;
+        List<Anime> animeResponsesList = new List<Anime>();
+        List<Anime> sfwAnimeResponsesList = new List<Anime>();
+        List<Anime> nsfwAnimeResponsesList = new List<Anime>();
         string previousEntry = "";
 
         public MainWindow()
@@ -986,8 +999,20 @@ namespace WhatsNextWPF
                 {
                     ShowLoading();
                 }
-                animeResponse = await jikan.SearchAnimeAsync(TextAnimeTB);
 
+                AnimeSearchConfig searchConfig = new AnimeSearchConfig()
+                {
+                    Query = TextAnimeTB,
+                    Sfw = true,
+                    Type = AnimeType.EveryType,
+                    MinimumScore = 0,
+                    MaximumScore = 10,
+                };
+
+                animeResponse = await jikan.SearchAnimeAsync(searchConfig);
+                
+                ApplyFilter(animeResponse);
+                
                 // Set the anime counter to 0
                 animeCounter = 0;
                 animeTotal = animeResponse.Data.Count;
@@ -1004,11 +1029,37 @@ namespace WhatsNextWPF
                     HandleAnimations();
                 }
 
-                var firstAnime = animeResponse.Data.Skip(animeCounter).First();
-                var secondAnime = animeResponse.Data.Skip(animeCounter + 1).First();
-                var thirdAnime = animeResponse.Data.Skip(animeCounter + 2).First();
-                var fourthAnime = animeResponse.Data.Skip(animeCounter + 3).First();
-                var fifthAnime = animeResponse.Data.Skip(animeCounter + 4).First();
+                Anime firstAnime;
+                Anime secondAnime;
+                Anime thirdAnime;
+                Anime fourthAnime;
+                Anime fifthAnime;
+
+                // Depending on the age rating selected, display the anime information
+                switch (_ageRatingSelected)
+                {
+                    case AgeRatingSelected.SFW:
+                        firstAnime = sfwAnimeResponsesList[animeCounter];
+                        secondAnime = sfwAnimeResponsesList[animeCounter + 1];
+                        thirdAnime = sfwAnimeResponsesList[animeCounter + 2];
+                        fourthAnime = sfwAnimeResponsesList[animeCounter + 3];
+                        fifthAnime = sfwAnimeResponsesList[animeCounter + 4];
+                        break;
+                    case AgeRatingSelected.NSFW:
+                        firstAnime = nsfwAnimeResponsesList[animeCounter];
+                        secondAnime = nsfwAnimeResponsesList[animeCounter + 1];
+                        thirdAnime = nsfwAnimeResponsesList[animeCounter + 2];
+                        fourthAnime = nsfwAnimeResponsesList[animeCounter + 3];
+                        fifthAnime = nsfwAnimeResponsesList[animeCounter + 4];
+                        break;
+                    default:
+                        firstAnime = animeResponsesList[animeCounter];
+                        secondAnime = animeResponsesList[animeCounter + 1];
+                        thirdAnime = animeResponsesList[animeCounter + 2];
+                        fourthAnime = animeResponsesList[animeCounter + 3];
+                        fifthAnime = animeResponsesList[animeCounter + 4];
+                        break;
+                }
 
                 // Display the anime information in the groupbox
                 gbOne.Header = firstAnime.Title ?? "None";
@@ -1230,7 +1281,27 @@ namespace WhatsNextWPF
                 }
 
                 // if there are less than 5 anime, disable the forward button
-                if (animeResponse.Data.Count <= 5)
+                if (animeResponsesList.Count <= 5 && _ageRatingSelected == AgeRatingSelected.ALL)
+                {
+                    forwardB.IsEnabled = false;
+                    forwardB.BeginAnimation(Button.OpacityProperty, opacityAnimationBBLess);
+                    forwardB.Visibility = Visibility.Collapsed;
+
+                    backwardB.IsEnabled = false;
+                    backwardB.BeginAnimation(Button.OpacityProperty, opacityAnimationBBLess);
+                    backwardB.Visibility = Visibility.Collapsed;
+                }
+                else if (sfwAnimeResponsesList.Count <= 5 && _ageRatingSelected == AgeRatingSelected.SFW)
+                {
+                    forwardB.IsEnabled = false;
+                    forwardB.BeginAnimation(Button.OpacityProperty, opacityAnimationBBLess);
+                    forwardB.Visibility = Visibility.Collapsed;
+
+                    backwardB.IsEnabled = false;
+                    backwardB.BeginAnimation(Button.OpacityProperty, opacityAnimationBBLess);
+                    backwardB.Visibility = Visibility.Collapsed;
+                }
+                else if (nsfwAnimeResponsesList.Count <= 5 && _ageRatingSelected == AgeRatingSelected.NSFW)
                 {
                     forwardB.IsEnabled = false;
                     forwardB.BeginAnimation(Button.OpacityProperty, opacityAnimationBBLess);
@@ -1242,7 +1313,25 @@ namespace WhatsNextWPF
                 }
             }
 
+            _previousAgeRating = _ageRatingSelected;
             previousEntry = TextAnimeTB;
+        }
+
+        private void ApplyFilter(PaginatedJikanResponse<ICollection<Anime>> animeResponse)
+        {
+            foreach (var anime in animeResponse.Data)
+            {
+                if (anime.Rating == "Rx - Hentai")
+                {
+                    nsfwAnimeResponsesList.Add(anime);
+                }
+                else if (anime.Rating != "Rx - Hentai")
+                {
+                    sfwAnimeResponsesList.Add(anime);
+                }
+
+                animeResponsesList.Add(anime);
+            }
         }
 
         private async void HandleAnimations()
