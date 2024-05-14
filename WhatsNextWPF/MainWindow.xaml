@@ -42,12 +42,6 @@
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="*" />
                                     <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <TextBlock Grid.Column="3" Margin="8 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Search:" Style="{DynamicResource MaterialDesignTitleLargeTextBlock}" />
                                 <TextBox 
@@ -61,15 +55,53 @@
                                         KeyDown="TB_KeyDown" />
                             </Grid>
                         </StackPanel>
-                        <ProgressBar
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="40" />
+                            </Grid.RowDefinitions>
+                            <ToggleButton
+                                x:Name="allTB"
+                                Grid.Column="0"
+                                HorizontalAlignment="Right"
+                                IsChecked="True"
+                                Content="ALL"
+                                Style="{StaticResource MaterialDesignSwitchDarkToggleButton}"
+                                ToolTip="MaterialDesignSwitchDarkToggleButton"
+                                Click="allTB_Click"/>
+                            <ToggleButton
+                                x:Name="sfwTB"
+                                Grid.Column="1"
+                                HorizontalAlignment="Center"
+                                IsChecked="False"
+                                Content="S"
+                                Style="{StaticResource MaterialDesignSwitchDarkToggleButton}"
+                                ToolTip="MaterialDesignSwitchDarkToggleButton"
+                                Click="sfwTB_Click"/>
+                            <ToggleButton
+                                x:Name="nsfwTB"
+                                Grid.Column="2"
+                                HorizontalAlignment="Left"
+                                IsChecked="False"
+                                Content="N"
+                                Style="{StaticResource MaterialDesignSwitchDarkToggleButton}"
+                                ToolTip="MaterialDesignSwitchDarkToggleButton"
+                                Click="nsfwTB_Click"/>
+                            <ProgressBar
                                 x:Name="ProgressBar"
                                 IsIndeterminate="True"
+                                Grid.ColumnSpan="3"
                                 Value="{Binding ValuePB, Mode=TwoWay}"
                                 Height="10"
                                 Width="{Binding WidthPB, Mode=TwoWay}"
                                 Visibility="{Binding VisibilityPB, Mode=TwoWay}"
                                 Opacity="{Binding OpacityPB, Mode=TwoWay}"
                                 Margin="8" />
+                        </Grid>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <Grid VerticalAlignment="Top" Margin="16">
                                 <Grid.ColumnDefinitions>
@@ -420,12 +452,12 @@
                                 </GroupBox>
                             </Grid>
                         </StackPanel>
-                        <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
+                        <Grid Height="96">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="115" />
                             </Grid.RowDefinitions>
@@ -538,6 +570,6 @@
                 Style="{StaticResource MaterialDesignRaisedButton}"
                 Margin="8" />
         </StackPanel>
-        
+
     </StackPanel>
 </Window>

@@ -876,7 +876,7 @@ namespace WhatsNextWPF
             ALL
         }
 
-        private AgeRatingSelected _ageRatingSelected = AgeRatingSelected.NSFW;
+        private AgeRatingSelected _ageRatingSelected = AgeRatingSelected.ALL;
         private AgeRatingSelected _previousAgeRating = AgeRatingSelected.ALL;
 
         public int animeCounter = 0;
@@ -884,7 +884,7 @@ namespace WhatsNextWPF
 
         /* ========== Jikan Client ========== */
         IJikan jikan;
-        PaginatedJikanResponse<ICollection<Anime>> animeResponse;
+        PaginatedJikanResponse<ICollection<Anime>> animeResponse = null;
         List<Anime> animeResponsesList = new List<Anime>();
         List<Anime> sfwAnimeResponsesList = new List<Anime>();
         List<Anime> nsfwAnimeResponsesList = new List<Anime>();
@@ -970,10 +970,15 @@ namespace WhatsNextWPF
                 // animate the opacity of the progress bar
                 DoubleAnimation opacityAnimation = new DoubleAnimation(1, TimeSpan.FromSeconds(0.8));
                 ProgressBar.BeginAnimation(ProgressBar.OpacityProperty, opacityAnimation);
-                
+
+                // Hide allTB, sfwTB, and nsfwTB
+                allTB.Visibility = Visibility.Collapsed;
+                sfwTB.Visibility = Visibility.Collapsed;
+                nsfwTB.Visibility = Visibility.Collapsed;
+
                 // Send a request to the Jikan API to get the anime information
                 await GetAnimeInfo();
-                
+
                 // If the anime is not found, display a snackbar message
                 if (animeResponse.Data.Count == 0)
                 {
@@ -981,11 +986,21 @@ namespace WhatsNextWPF
 
                     // Hide the progress bar
                     DoubleAnimation opacityAnimation2 = new DoubleAnimation(0, TimeSpan.FromSeconds(0.8));
-                    opacityAnimation2.Completed += (s, e) => ProgressBar.Visibility = Visibility.Hidden;
-                    opacityAnimation2.Completed += (s, e) => ProgressBar.Value = 0;
+                    opacityAnimation2.Completed += new EventHandler(pb_Completed);
                     ProgressBar.BeginAnimation(ProgressBar.OpacityProperty, opacityAnimation2);
                 }
             }
+        }
+
+        private void pb_Completed(object sender, EventArgs e)
+        {
+            ProgressBar.Visibility = Visibility.Hidden;
+            ProgressBar.Value = 0;
+
+            // Show allTB, sfwTB, and nsfwTB
+            allTB.Visibility = Visibility.Visible;
+            sfwTB.Visibility = Visibility.Visible;
+            nsfwTB.Visibility = Visibility.Visible;
         }
 
         private async Task GetAnimeInfo()
@@ -1012,14 +1027,46 @@ namespace WhatsNextWPF
                 animeResponse = await jikan.SearchAnimeAsync(searchConfig);
                 
                 ApplyFilter(animeResponse);
-                
+
+                // If SFW is empty, disable the SFW button
+                if (sfwAnimeResponsesList.Count == 0)
+                {
+                    sfwTB.IsEnabled = false;
+                    sfwTB.IsChecked = false;
+                    allTB.IsChecked = true;
+
+                    _ageRatingSelected = AgeRatingSelected.ALL;
+                }
+                else
+                {
+                    sfwTB.IsEnabled = true;
+                }
+
+                // If NSFW is empty, disable the NSFW button
+                if (nsfwAnimeResponsesList.Count == 0)
+                {
+                    nsfwTB.IsEnabled = false;
+                    nsfwTB.IsChecked = false;
+                    allTB.IsChecked = true;
+
+                    _ageRatingSelected = AgeRatingSelected.ALL;
+                }
+                else
+                {
+                    nsfwTB.IsEnabled = true;
+                }
+
                 // Set the anime counter to 0
                 animeCounter = 0;
                 animeTotal = animeResponse.Data.Count;
             }
 
-            // Wait for the simulated delay to finish
-            //await progressTask;               
+            if (animeResponse == null)
+            {
+                ShowSnackBar("Please search for an anime.");
+
+                return;
+            }
 
             // If the anime is not found, display a snackbar message
             if (animeResponse.Data.Count != 0)
@@ -1059,6 +1106,12 @@ namespace WhatsNextWPF
                         fourthAnime = animeResponsesList[animeCounter + 3];
                         fifthAnime = animeResponsesList[animeCounter + 4];
                         break;
+                }
+
+                // If the previous age rating is not the same as the current age rating, show the loading animation
+                if (_previousAgeRating != _ageRatingSelected)
+                {
+                    ShowLoading();
                 }
 
                 // Display the anime information in the groupbox
@@ -1241,8 +1294,7 @@ namespace WhatsNextWPF
                 {
                     // Hide the progress bar
                     DoubleAnimation opacityAnimation2 = new DoubleAnimation(0, TimeSpan.FromSeconds(0.8));
-                    opacityAnimation2.Completed += (s, e) => ProgressBar.Visibility = Visibility.Hidden;
-                    opacityAnimation2.Completed += (s, e) => ProgressBar.Value = 0;
+                    opacityAnimation2.Completed += new EventHandler(pb_Completed);
                     ProgressBar.BeginAnimation(ProgressBar.OpacityProperty, opacityAnimation2);
 
                     EndLoading();
@@ -1319,6 +1371,11 @@ namespace WhatsNextWPF
 
         private void ApplyFilter(PaginatedJikanResponse<ICollection<Anime>> animeResponse)
         {
+            // Clear the lists
+            animeResponsesList.Clear();
+            sfwAnimeResponsesList.Clear();
+            nsfwAnimeResponsesList.Clear();
+
             foreach (var anime in animeResponse.Data)
             {
                 if (anime.Rating == "Rx - Hentai")
@@ -1340,8 +1397,7 @@ namespace WhatsNextWPF
             {
                 // Hide the progress bar
                 DoubleAnimation opacityAnimation2 = new DoubleAnimation(0, TimeSpan.FromSeconds(0.8));
-                opacityAnimation2.Completed += (s, e) => ProgressBar.Visibility = Visibility.Hidden;
-                opacityAnimation2.Completed += (s, e) => ProgressBar.Value = 0;
+                opacityAnimation2.Completed += new EventHandler(pb_Completed);
                 ProgressBar.BeginAnimation(ProgressBar.OpacityProperty, opacityAnimation2);
 
                 // Show the groupboxes with a width, height, and opacity animation with a delay between each
@@ -1388,26 +1444,31 @@ namespace WhatsNextWPF
         {
             imgOne.Visibility = Visibility.Collapsed;
             bOne.Visibility = Visibility.Collapsed;
+            bOne.IsEnabled = false;
             TextGBOne = "";
             loadOne.Visibility = Visibility.Visible;
 
             imgTwo.Visibility = Visibility.Collapsed;
             bTwo.Visibility = Visibility.Collapsed;
+            bTwo.IsEnabled = false;
             TextGBTwo = "";
             loadTwo.Visibility = Visibility.Visible;
 
             imgThree.Visibility = Visibility.Collapsed;
             bThree.Visibility = Visibility.Collapsed;
+            bThree.IsEnabled = false;
             TextGBThree = "";
             loadThree.Visibility = Visibility.Visible;
 
             imgFour.Visibility = Visibility.Collapsed;
             bFour.Visibility = Visibility.Collapsed;
+            bFour.IsEnabled = false;
             TextGBFour = "";
             loadFour.Visibility = Visibility.Visible;
 
             imgFive.Visibility = Visibility.Collapsed;
             bFive.Visibility = Visibility.Collapsed;
+            bFive.IsEnabled = false;
             TextGBFive = "";
             loadFive.Visibility = Visibility.Visible;
         }
@@ -1417,22 +1478,27 @@ namespace WhatsNextWPF
             loadOne.Visibility = Visibility.Collapsed;
             imgOne.Visibility = Visibility.Visible;
             bOne.Visibility = Visibility.Visible;
+            bOne.IsEnabled = true;
 
             loadTwo.Visibility = Visibility.Collapsed;
             imgTwo.Visibility = Visibility.Visible;
             bTwo.Visibility = Visibility.Visible;
+            bTwo.IsEnabled = true;
 
             loadThree.Visibility = Visibility.Collapsed;
             imgThree.Visibility = Visibility.Visible;
             bThree.Visibility = Visibility.Visible;
+            bThree.IsEnabled = true;
 
             loadFour.Visibility = Visibility.Collapsed;
             imgFour.Visibility = Visibility.Visible;
             bFour.Visibility = Visibility.Visible;
+            bFour.IsEnabled = true;
 
             loadFive.Visibility = Visibility.Collapsed;
             imgFive.Visibility = Visibility.Visible;
             bFive.Visibility = Visibility.Visible;
+            bFive.IsEnabled = true;
         }
 
         private void MouseOver_GB(object sender, MouseEventArgs e)
@@ -1501,25 +1567,59 @@ namespace WhatsNextWPF
             }
         }
 
-        private void Backward_Click(object sender, RoutedEventArgs e)
+        private async void Backward_Click(object sender, RoutedEventArgs e)
         {
             animeCounter -= 5;
             int numAnime = (animeCounter * 100) / (animeTotal);
-            BackwardBVal = numAnime;
-            ForwardBVal = numAnime + 5;
+            //BackwardBVal = numAnime;
+            //ForwardBVal = numAnime + 5;
+
+            // "Animate" the click
+            AnimateClick(numAnime);
+
             GetAnimeInfo();
         }
 
-        private void Forward_Click(object sender, RoutedEventArgs e)
+        private async void Forward_Click(object sender, RoutedEventArgs e)
         {
             animeCounter += 5;
             int numAnime = (animeCounter * 100) / (animeTotal);
-            BackwardBVal = numAnime;
-            ForwardBVal = numAnime + 5;
+            //BackwardBVal = numAnime;
+            //ForwardBVal = numAnime + 5;
+
+            // "Animate" the click
+            AnimateClick(numAnime);
+
             GetAnimeInfo();
         }
 
-        private void SelectAnime_Click(object sender, RoutedEventArgs e)
+        private async Task AnimateClick(int numAnime)
+        {
+            while (BackwardBVal != numAnime)
+            {
+                if (BackwardBVal > numAnime)
+                {
+                    BackwardBVal--;
+                }
+                else
+                {
+                    BackwardBVal++;
+                }
+
+                if (ForwardBVal > numAnime + 5)
+                {
+                    ForwardBVal--;
+                }
+                else
+                {
+                    ForwardBVal++;
+                }
+
+                await Task.Delay(20);
+            }
+        }
+
+        private async void SelectAnime_Click(object sender, RoutedEventArgs e)
         {
             // On click, get the information for the anime of the parent groupbox
             GroupBox groupBox = (GroupBox)((Grid)((Button)sender).Parent).Parent;
@@ -1560,6 +1660,61 @@ namespace WhatsNextWPF
             DoubleAnimation slOpacityAnimation = new DoubleAnimation(1, TimeSpan.FromSeconds(0.8));
 
             SelectedSP.BeginAnimation(StackPanel.OpacityProperty, slOpacityAnimation);
+        }
+
+        private void allTB_Click(object sender, RoutedEventArgs e)
+        {
+            _ageRatingSelected = AgeRatingSelected.ALL;
+            sfwTB.IsChecked = false;
+            nsfwTB.IsChecked = false;
+
+            if (_previousAgeRating != _ageRatingSelected)
+            {
+                animeCounter = 0;
+
+                GetAnimeInfo();
+            }
+        }
+        private async void sfwTB_Click(object sender, RoutedEventArgs e)
+        {
+            _ageRatingSelected = AgeRatingSelected.SFW;
+            nsfwTB.IsChecked = false;
+            allTB.IsChecked = false;
+
+            if (_previousAgeRating != _ageRatingSelected)
+            {
+                animeCounter = 0;
+
+                int numAnime = (animeCounter * 100) / (animeTotal);
+                //BackwardBVal = numAnime;
+                //ForwardBVal = numAnime + 5;
+
+                // "Animate" the click
+                AnimateClick(numAnime);
+
+                GetAnimeInfo();
+            }
+        }
+
+        private async void nsfwTB_Click(object sender, RoutedEventArgs e)
+        {
+            _ageRatingSelected = AgeRatingSelected.NSFW;
+            sfwTB.IsChecked = false;
+            allTB.IsChecked = false;
+
+            if (_previousAgeRating != _ageRatingSelected)
+            {
+                animeCounter = 0;
+
+                int numAnime = (animeCounter * 100) / (animeTotal);
+                //BackwardBVal = numAnime;
+                //ForwardBVal = numAnime + 5;
+
+                // "Animate" the click
+                AnimateClick(numAnime);
+
+                GetAnimeInfo();
+            }
         }
     }
 }
