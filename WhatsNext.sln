@@ -5,6 +5,8 @@ VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WhatsNextWPF", "WhatsNextWPF\WhatsNextWPF.csproj", "{2F44C995-20BC-4FFB-A3CA-8A4B655D825A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhatsNextCA", "WhatsNextCA\WhatsNextCA.csproj", "{93173134-2DFD-46F6-8B03-05CAC3FAD86D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{2F44C995-20BC-4FFB-A3CA-8A4B655D825A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F44C995-20BC-4FFB-A3CA-8A4B655D825A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F44C995-20BC-4FFB-A3CA-8A4B655D825A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93173134-2DFD-46F6-8B03-05CAC3FAD86D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93173134-2DFD-46F6-8B03-05CAC3FAD86D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93173134-2DFD-46F6-8B03-05CAC3FAD86D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93173134-2DFD-46F6-8B03-05CAC3FAD86D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
