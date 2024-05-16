@@ -581,12 +581,29 @@
             x:Name="SelectedSP"
             Visibility="Collapsed"
             Opacity="0">
-            
+            <Grid
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+                <ItemsControl ItemsSource="{Binding AnimeList}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <materialDesign:Flipper Template="{StaticResource ResourceKey=FlipperTemplate}" Margin="8 8 8 8"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
             <Button
                 x:Name="BackButton"
-                Content="Back"
+                Content="Return"
+                VerticalAlignment="Bottom"
                 Style="{StaticResource MaterialDesignRaisedButton}"
-                Margin="8" />
+                Margin="8"
+                Click="Return_Click"/>
         </StackPanel>
     </StackPanel>
 </Window>

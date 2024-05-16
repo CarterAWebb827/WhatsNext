@@ -18,6 +18,7 @@ using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
 using System.Runtime.CompilerServices;
 using WhatsNextCA;
+using System.Collections.ObjectModel;
 
 namespace WhatsNextWPF
 {
@@ -877,6 +878,15 @@ namespace WhatsNextWPF
             ALL
         }
 
+        public class AnimeModel
+        {
+            public ImageSource AnimeImage { get; set; }
+            public string AnimeName { get; set; }
+            public string AnimeInfo { get; set; }
+        }
+
+        public ObservableCollection<AnimeModel> AnimeList { get; set; } = new ObservableCollection<AnimeModel>();
+
         private AgeRatingSelected _ageRatingSelected = AgeRatingSelected.ALL;
         private AgeRatingSelected _previousAgeRating = AgeRatingSelected.ALL;
 
@@ -1685,8 +1695,45 @@ namespace WhatsNextWPF
             SelectedSP.BeginAnimation(StackPanel.OpacityProperty, slOpacityAnimation);
         }
 
+        private void sp1OpacityAnimation_Completed(object sender, EventArgs e)
+        {
+            SelectedSP.Visibility = Visibility.Collapsed;
+
+            SelectionSP.Visibility = Visibility.Visible;
+
+            DoubleAnimation slOpacityAnimation = new DoubleAnimation(1, TimeSpan.FromSeconds(0.8));
+
+            SelectionSP.BeginAnimation(StackPanel.OpacityProperty, slOpacityAnimation);
+
+            recommendTypeTB.IsEnabled = true;
+        }
+
         private void LoadSelectedAnime(object sender, EventArgs e)
         {
+            AnimeList.Clear();
+
+            // Load test data into AnimeList
+            AnimeList.Add(new AnimeModel
+            {
+                AnimeImage = SourceGBOne,
+                AnimeName = gbOne.Header.ToString(),
+                AnimeInfo = TextGBOne
+            });
+
+            AnimeList.Add(new AnimeModel
+            {
+                AnimeImage = SourceGBTwo,
+                AnimeName = gbTwo.Header.ToString(),
+                AnimeInfo = TextGBTwo
+            });
+
+            AnimeList.Add(new AnimeModel
+            {
+                AnimeImage = SourceGBThree,
+                AnimeName = gbThree.Header.ToString(),
+                AnimeInfo = TextGBThree
+            });
+
             /*
             if (jData.Count != 0)
             {
@@ -1788,6 +1835,20 @@ namespace WhatsNextWPF
 
                 GetAnimeInfo();
             }
+        }
+
+        private void Return_Click(object sender, RoutedEventArgs e)
+        {
+            // Return from the SelectedSP to the SelectionSP
+            DoubleAnimation slOpacityAnimation = new DoubleAnimation(0, TimeSpan.FromSeconds(0.8));
+
+            slOpacityAnimation.Completed += new EventHandler(sp1OpacityAnimation_Completed);
+
+            SelectedSP.BeginAnimation(StackPanel.OpacityProperty, slOpacityAnimation);
+
+            //SelectionSP.Visibility = Visibility.Visible;
+
+            recommendTypeTB.IsEnabled = true;
         }
     }
 }
