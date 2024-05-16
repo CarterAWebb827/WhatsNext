@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WhatsNextWPF"
-        xmlns:smtx="clr-namespace:ShowMeTheXAML;assembly=ShowMeTheXAML"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
@@ -16,6 +15,13 @@
         TextOptions.TextRenderingMode="Auto"
         Title="What's Next - Anime Recommender" Height="800" Width="1300"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="TemplateDict.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
     <StackPanel>
         <!-- Make the Visibility Visible if you arent doing anything with the other Stack Panel -->
         <StackPanel 
@@ -481,10 +487,21 @@
                                 IsEnabled="{Binding EnabledBB, Mode=TwoWay}"
                                 Style="{StaticResource MaterialDesignFloatingActionButton}"
                                 Click="Backward_Click"/>
+                            <ToggleButton
+                                x:Name="recommendTypeTB"
+                                Grid.Column="1"
+                                VerticalAlignment="Top"
+                                materialDesign:ElevationAssist.Elevation="Dp4"
+                                materialDesign:ToggleButtonAssist.OnContent="{materialDesign:PackIcon Kind=AlphaACircle}"
+                                Content="{materialDesign:PackIcon Kind=AlphaJCircle}"
+                                Style="{StaticResource MaterialDesignActionToggleButton}"
+                                ToolTip="MaterialDesignActionToggleButton"
+                                Visibility="Visible"/>
                             <materialDesign:Snackbar
                                 x:Name="TestSnackBar"
                                 Grid.Column="1"
                                 VerticalAlignment="Top"
+                                Visibility="Collapsed"
                                 IsActive="{Binding IsActiveSB, Mode=TwoWay}"
                                 Message="{Binding MessageSB, Mode=TwoWay}" Height="75" />
                             <Button
@@ -564,12 +581,12 @@
             x:Name="SelectedSP"
             Visibility="Collapsed"
             Opacity="0">
+            
             <Button
                 x:Name="BackButton"
                 Content="Back"
                 Style="{StaticResource MaterialDesignRaisedButton}"
                 Margin="8" />
         </StackPanel>
-
     </StackPanel>
 </Window>

@@ -17,6 +17,7 @@ using System.Collections.Immutable;
 using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
 using System.Runtime.CompilerServices;
+using WhatsNextCA;
 
 namespace WhatsNextWPF
 {
@@ -882,6 +883,10 @@ namespace WhatsNextWPF
         public int animeCounter = 0;
         public int animeTotal = 0;
 
+        public Recommendation recommendation = new Recommendation(); // Recommendation object
+        List<DataCollector.AnimeData> jData = new List<DataCollector.AnimeData>(); // List of anime data from Jikan
+        List<DataCollector.AnimeData> cbData = new List<DataCollector.AnimeData>(); // List of anime data from Content-Based Filtering
+
         /* ========== Jikan Client ========== */
         IJikan jikan;
         PaginatedJikanResponse<ICollection<Anime>> animeResponse = null;
@@ -950,12 +955,16 @@ namespace WhatsNextWPF
         {
             MessageSB = message;
             IsActiveSB = true;
+            recommendTypeTB.Visibility = Visibility.Collapsed;
+            TestSnackBar.Visibility = Visibility.Visible;
 
             // Simulate a delay before hiding the snackbar
             await Dispatcher.InvokeAsync(async () =>
             {
                 await Task.Delay(3000);
                 IsActiveSB = false;
+                TestSnackBar.Visibility = Visibility.Collapsed;
+                recommendTypeTB.Visibility = Visibility.Visible;
             });
         }
 
@@ -1623,13 +1632,11 @@ namespace WhatsNextWPF
         {
             // On click, get the information for the anime of the parent groupbox
             GroupBox groupBox = (GroupBox)((Grid)((Button)sender).Parent).Parent;
-            HeaderGBOne = groupBox.Header.ToString();
+            string title = groupBox.Header.ToString();
+            DataCollector.AnimeData anime = recommendation.GetAnimeFromTitle(title);
 
-            // The groupbox contains a child stackpanel which contains the image and textblock
-            Grid grid = (Grid)groupBox.Content;
-            System.Windows.Controls.Image image = (System.Windows.Controls.Image)grid.Children[1];
-            TextBlock textBlock = (TextBlock)grid.Children[2];
-            SourceGBOne = image.Source;
+            jData.Clear();
+            //jData = await recommendation.JikanRecommendations(anime);
 
             Button button = (Button)sender;
             if (button != null && button.Command != null)
@@ -1643,12 +1650,26 @@ namespace WhatsNextWPF
             // Call the ShowSnackBar method to display the information
             //ShowSnackBar(textBlock.Text);
 
+            // Disable the recommendation type toggle button
+            recommendTypeTB.IsEnabled = false;
+
             DoubleAnimation spOpacityAnimation = new DoubleAnimation(0, TimeSpan.FromSeconds(0.8));
 
             // Attach the event handler to the Completed event for spOpacityAnimation
             spOpacityAnimation.Completed += new EventHandler(spOpacityAnimation_Completed);
 
             SelectionSP.BeginAnimation(StackPanel.OpacityProperty, spOpacityAnimation);
+
+            if (recommendTypeTB.IsChecked == true)
+            {
+                cbData = await recommendation.CBRecommendations(anime);
+                jData.Clear();
+            }
+            else if (recommendTypeTB.IsChecked == false)
+            {
+                jData = await recommendation.JikanRecommendations(anime);
+                cbData.Clear();
+            }
         }
 
         private void spOpacityAnimation_Completed(object sender, EventArgs e)
@@ -1659,7 +1680,59 @@ namespace WhatsNextWPF
 
             DoubleAnimation slOpacityAnimation = new DoubleAnimation(1, TimeSpan.FromSeconds(0.8));
 
+            slOpacityAnimation.Completed += new EventHandler(LoadSelectedAnime);
+
             SelectedSP.BeginAnimation(StackPanel.OpacityProperty, slOpacityAnimation);
+        }
+
+        private void LoadSelectedAnime(object sender, EventArgs e)
+        {
+            /*
+            if (jData.Count != 0)
+            {
+                DataCollector.AnimeData anime = jData[0];
+
+                // Fetch the anime images
+                var imageResponse = await jikan.GetAnimePicturesAsync((long)anime.MalId);
+                var image = imageResponse.Data.FirstOrDefault();
+                var imageUrl = image?.JPG.ImageUrl ?? "C:\\Users\\Carter\\Desktop\\Coding Projects\\WhatsNext\\WhatsNextWPF\\Resources\\Default.jpg";
+                var animeGenres = anime.Genres.Select(g => g.Name).ToImmutableList() ?? ImmutableList.Create("None");
+                if (animeGenres.Count == 0)
+                {
+                    animeGenres = ImmutableList.Create("None");
+                }
+                var animeType = anime.Type ?? "None";
+                var animeAgeRating = anime.Rating ?? "None";
+
+                // Add the image and text to each groupbox
+                SourceGBOne = new BitmapImage(new Uri(imageUrl, UriKind.Absolute));
+                imgOne.Width = 160;
+                imgOne.Height = 160;
+                var genreList = string.Join(", ", animeGenres);
+                TextGBOne = "MAL Rating: " + anime.Score + "\nGenres: " + genreList + "\nType: " + animeType + "\nAge Rating: " + animeAgeRating;
+            }
+            else if (cbData.Count != 0)
+            {
+                DataCollector.AnimeData anime = cbData[0];
+
+                // Fetch the anime images
+                var imageResponse = await jikan.GetAnimePicturesAsync((long)anime.MalId);
+                var image = imageResponse.Data.FirstOrDefault();
+                var imageUrl = image?.JPG.ImageUrl ?? "C:\\Users\\Carter\\Desktop\\Coding Projects\\WhatsNext\\WhatsNextWPF\\Resources\\Default.jpg";
+                var animeGenres = anime.Genres.Select(g => g.Name).ToImmutableList() ?? ImmutableList.Create("None");
+                if (animeGenres.Count == 0)
+                {
+                    animeGenres = ImmutableList.Create("None");
+                }
+                var animeType = anime.Type ?? "None";
+                var animeAgeRating = anime.Rating ?? "None";
+
+                // Add the image and text to each groupbox
+                SourceGBOne = new BitmapImage(new Uri(imageUrl, UriKind.Absolute));
+                imgOne.Width = 160;
+                imgOne.Height = 160;
+            }
+            */
         }
 
         private void allTB_Click(object sender, RoutedEventArgs e)
