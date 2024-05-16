@@ -55,14 +55,14 @@
                         Width="172"
                         Margin="0,6,0,0"
                         HorizontalAlignment="Center"
-                        VerticalAlignment="Top">
+                        VerticalAlignment="Stretch">
                         <Grid.RowDefinitions>
                             <RowDefinition />
                             <RowDefinition />
                             <RowDefinition />
                             <RowDefinition />
                         </Grid.RowDefinitions>
-                        <TextBlock Margin="8 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding AnimeInfo}" />
+                        <TextBlock Margin="8 0 0 0" VerticalAlignment="Stretch" HorizontalAlignment="Center" Text="{Binding AnimeInfo}" TextWrapping="Wrap"/>
                     </Grid>
                 </Grid>
             </materialDesign:Flipper.BackContent>

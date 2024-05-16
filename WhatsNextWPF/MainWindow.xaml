@@ -579,12 +579,20 @@
         <!-- Make the Visibility Collapsed if you arent doing anything with this Stack Panel -->
         <StackPanel
             x:Name="SelectedSP"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Stretch"
             Visibility="Collapsed"
             Opacity="0">
             <Grid
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center">
-                <ItemsControl ItemsSource="{Binding AnimeList}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <ItemsControl ItemsSource="{Binding AnimeList}"
+                              Grid.Row="0"
+                              VerticalAlignment="Center">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel Orientation="Horizontal" />
@@ -592,18 +600,21 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <materialDesign:Flipper Template="{StaticResource ResourceKey=FlipperTemplate}" Margin="8 8 8 8"/>
+                            <materialDesign:Flipper Template="{StaticResource ResourceKey=FlipperTemplate}"
+                                                    Margin="8"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
+                <Button
+                    x:Name="BackButton"
+                    Grid.Row="1"
+                    Content="Return"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Bottom"
+                    Style="{StaticResource MaterialDesignRaisedButton}"
+                    Margin="8"
+                    Click="Return_Click"/>
             </Grid>
-            <Button
-                x:Name="BackButton"
-                Content="Return"
-                VerticalAlignment="Bottom"
-                Style="{StaticResource MaterialDesignRaisedButton}"
-                Margin="8"
-                Click="Return_Click"/>
         </StackPanel>
     </StackPanel>
 </Window>

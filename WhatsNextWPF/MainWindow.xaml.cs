@@ -1716,21 +1716,21 @@ namespace WhatsNextWPF
             AnimeList.Add(new AnimeModel
             {
                 AnimeImage = SourceGBOne,
-                AnimeName = gbOne.Header.ToString(),
+                AnimeName = HeaderGBOne,
                 AnimeInfo = TextGBOne
             });
 
             AnimeList.Add(new AnimeModel
             {
                 AnimeImage = SourceGBTwo,
-                AnimeName = gbTwo.Header.ToString(),
+                AnimeName = HeaderGBTwo,
                 AnimeInfo = TextGBTwo
             });
 
             AnimeList.Add(new AnimeModel
             {
                 AnimeImage = SourceGBThree,
-                AnimeName = gbThree.Header.ToString(),
+                AnimeName = HeaderGBThree,
                 AnimeInfo = TextGBThree
             });
 
