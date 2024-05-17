@@ -1798,8 +1798,11 @@ namespace WhatsNextWPF
             if (_previousAgeRating != _ageRatingSelected)
             {
                 animeCounter = 0;
-
-                int numAnime = (animeCounter * 100) / (animeTotal);
+                int numAnime = 0;
+                if (animeTotal != 0)
+                {
+                    numAnime = (animeCounter * 100) / (animeTotal);
+                }
                 //BackwardBVal = numAnime;
                 //ForwardBVal = numAnime + 5;
 
@@ -1820,7 +1823,11 @@ namespace WhatsNextWPF
             {
                 animeCounter = 0;
 
-                int numAnime = (animeCounter * 100) / (animeTotal);
+                int numAnime = 0;
+                if (animeTotal != 0)
+                {
+                    numAnime = (animeCounter * 100) / (animeTotal);
+                }
                 //BackwardBVal = numAnime;
                 //ForwardBVal = numAnime + 5;
 
