@@ -3,8 +3,16 @@
                     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
     <ControlTemplate x:Key="FlipperTemplate">
         <materialDesign:Flipper materialDesign:ElevationAssist.Elevation="Dp0" >
+            <!-- Rounded Edges -->
+            <materialDesign:Flipper.Clip>
+                <RectangleGeometry RadiusX="10" RadiusY="10" Rect="0,0,200,300"/>
+            </materialDesign:Flipper.Clip>
             <materialDesign:Flipper.FrontContent>
-                <Grid Width="200" Height="256" >
+                <Grid Width="200" Height="300" >
+                    <!-- Rounded Edges -->
+                    <Grid.Clip>
+                        <RectangleGeometry RadiusX="10" RadiusY="10" Rect="0,0,200,300"/>
+                    </Grid.Clip>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="160" />
                         <RowDefinition Height="*" />
@@ -19,7 +27,7 @@
                         Grid.Row="1"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center">
-                        <TextBlock Text="{Binding AnimeName}" />
+                        <TextBlock Text="{Binding AnimeName}" TextAlignment="Center" TextWrapping="Wrap"/>
                         <Button
                             Margin="0,4,0,0"
                             Command="{x:Static materialDesign:Flipper.FlipCommand}"
@@ -29,7 +37,11 @@
                 </Grid>
             </materialDesign:Flipper.FrontContent>
             <materialDesign:Flipper.BackContent>
-                <Grid Width="200" Height="256" >
+                <Grid Width="200" Height="300" >
+                    <!-- Rounded Edges -->
+                    <Grid.Clip>
+                        <RectangleGeometry RadiusX="10" RadiusY="10" Rect="0,0,200,300"/>
+                    </Grid.Clip>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
@@ -57,12 +69,10 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Stretch">
                         <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <TextBlock Margin="8 0 0 0" VerticalAlignment="Stretch" HorizontalAlignment="Center" Text="{Binding AnimeInfo}" TextWrapping="Wrap"/>
+                        <TextBlock Grid.Row="0" Margin="8 0 0 0" Height="220" VerticalAlignment="Stretch" HorizontalAlignment="Center" Text="{Binding AnimeInfo}" TextWrapping="Wrap"/>
                     </Grid>
                 </Grid>
             </materialDesign:Flipper.BackContent>

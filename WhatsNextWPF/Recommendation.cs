@@ -18,106 +18,22 @@ namespace WhatsNextWPF
         //List<DataCollector.AnimeData> jRecommendations = new List<DataCollector.AnimeData>();
         List<DataCollector.AnimeData> animes = new List<DataCollector.AnimeData>();
 
-        Dictionary<string, double> genreWeights = new Dictionary<string, double>
-        {
-            {"Action", 0.1},
-            {"Adventure", 0.4},
-            {"Avant Garde", 0.9},
-            {"Award Winning", 0.2},
-            {"Boys Love", 0.9},
-            {"Comedy", 0.7},
-            {"Drama", 0.7},
-            {"Ecchi", 1.0},
-            {"Erotica", 1.0},
-            {"Fantasy", 0.3},
-            {"Girls Love", 0.9},
-            {"Gourmet", 0.8},
-            {"Hentai", 1.0},
-            {"Horror", 0.8},
-            {"Mystery", 0.8},
-            {"Romance", 0.6},
-            {"Sci-Fi", 0.4},
-            {"Slice of Life", 0.4},
-            {"Sports", 0.9},
-            {"Supernatural", 0.5},
-            {"Suspense", 0.8}
-        };
-        Dictionary<string, double> themeWeights = new Dictionary<string, double>
-        {
-            {"Adult Cast", 0.6},
-            {"Anthropomorphic", 0.7},
-            {"CGDCT", 0.9},
-            {"Childcare", 0.8},
-            {"Combat Sports", 0.9},
-            {"Crossdressing", 0.8},
-            {"Delinquents", 0.8},
-            {"Detective", 0.9},
-            {"Educational", 1.0},
-            {"Gag Humor", 0.9},
-            {"Gore", 0.9},
-            {"Harem", 0.4},
-            {"High Stakes Game", 0.7},
-            {"Historical", 0.9},
-            {"Idol (Female)", 0.7},
-            {"Idol (Male)", 0.7},
-            {"Isekai", 0.5},
-            {"Iyashikei", 0.8},
-            {"Love Polygon", 0.6},
-            {"Magical Sex Shift", 1.0},
-            {"Mahou Shoujo", 0.8},
-            {"Martial Arts", 0.8},
-            {"Mecha", 0.8},
-            {"Medical", 0.9},
-            {"Military", 0.8},
-            {"Music", 0.9},
-            {"Mythology", 0.7},
-            {"Organized Crime", 0.7},
-            {"Otaku Culture", 0.6},
-            {"Parody", 1.0},
-            {"Performing Arts", 0.9},
-            {"Pets", 0.6},
-            {"Psychological", 0.8},
-            {"Racing", 0.9},
-            {"Reincarnation", 0.5},
-            {"Reverse Harem", 0.5},
-            {"Romantic Subtext", 0.6},
-            {"Samurai", 0.8},
-            {"School", 0.2},
-            {"Showbiz", 0.8},
-            {"Space", 0.9},
-            {"Strategy Game", 0.9},
-            {"Super Power", 0.4},
-            {"Survival", 0.7},
-            {"Team Sports", 0.9},
-            {"Time Travel", 1.0},
-            {"Vampire", 0.8},
-            {"Video Game", 0.8},
-            {"Visual Arts", 0.9},
-            {"Workplace", 0.6}
-        };
+        Weights weights;
+
+        Dictionary<string, double> genreWeights;
+        Dictionary<string, double> themeWeights;
+
         public Recommendation()
         {
             string jsonData = File.ReadAllText(jsonPath);
-            
-            this.animes = JsonConvert.DeserializeObject<List<DataCollector.AnimeData>>(jsonData);
-        }
+            string weightData = File.ReadAllText(@"C:\Users\Carter\Desktop\Coding Projects\WhatsNext\WhatsNextCA\weights.json");
 
-        public void AssignValues(DataCollector.AnimeData aD, int id, string url, string imageUrl, string title, string titleEnglish, string titleJapanese, string type, int episodes, string ageRating, double malRating, int rank, int year, List<string> genres, List<string> themes)
-        {
-            aD.Id = id;
-            aD.Url = url;
-            aD.ImageUrl = imageUrl.First().ToString();
-            aD.Title = title;
-            aD.TitleEnglish = titleEnglish;
-            //aD.TitleJapanese = titleJapanese;
-            aD.Type = type;
-            aD.Episodes = episodes;
-            aD.AgeRating = ageRating;
-            aD.Score = malRating;
-            aD.Rank = rank;
-            aD.Year = year;
-            aD.Genres = genres;
-            aD.Themes = themes;
+            this.animes = JsonConvert.DeserializeObject<List<DataCollector.AnimeData>>(jsonData);
+
+            weights = JsonConvert.DeserializeObject<Weights>(weightData);
+
+            genreWeights = weights.GenreWeights;
+            themeWeights = weights.ThemeWeights;
         }
 
         public DataCollector.AnimeData GetAnimeFromTitle(string title)
@@ -180,26 +96,26 @@ namespace WhatsNextWPF
             foreach (var a in animes)
             {
                 // Skip the anime if it is the same as the input anime
-                if (a.Title == anime.Title)
+                if (a.Title == anime.Title || AreTitlesSimilar(anime.Title, a.Title))
                 {
                     continue;
                 }
 
                 // Calculate the similarity score between the input anime and the current anime
-                double similarityScore = CalculateSimilarity(anime, a, maxYearDifference, maxEpisodeDifference);
+                double similarityScore = await CalculateSimilarity(anime, a, maxYearDifference, maxEpisodeDifference);
 
                 // Add the anime and its similarity score to the list of recommendations
                 recommendations.Add(new Tuple<DataCollector.AnimeData, double>(a, similarityScore));
             }
 
-            // Sort the recommendations by similarity score in descending order, taking the top 10
+            // Sort the recommendations by similarity score in descending order, taking the top 10,return recommendations.OrderByDescending(r => r.Item2)
             return recommendations.OrderByDescending(r => r.Item2)
                                   .Select(r => r.Item1)
-                                  .Take(10)
+                                  .Take(27)
                                   .ToList();
         }
 
-        private double CalculateSimilarity(DataCollector.AnimeData anime1, DataCollector.AnimeData anime2, int maxYearDifference, int maxEpisodeDifference)
+        private async Task<double> CalculateSimilarity(DataCollector.AnimeData anime1, DataCollector.AnimeData anime2, int maxYearDifference, int maxEpisodeDifference)
         {
             double similarityScore = 0.0;
 
@@ -289,6 +205,24 @@ namespace WhatsNextWPF
             }
 
             return similarityScore;
+        }
+
+        private bool AreTitlesSimilar(string title1, string title2)
+        {
+            // Remove any non-alphanumeric characters from the titles
+            string cleanTitle1 = new string(title1.Where(c => char.IsLetterOrDigit(c)).ToArray());
+            string cleanTitle2 = new string(title2.Where(c => char.IsLetterOrDigit(c)).ToArray());
+
+            // Convert the titles to lowercase
+            cleanTitle1 = cleanTitle1.ToLower();
+            cleanTitle2 = cleanTitle2.ToLower();
+
+            // Remove any whitespace from the titles
+            cleanTitle1 = cleanTitle1.Replace(" ", "");
+            cleanTitle2 = cleanTitle2.Replace(" ", "");
+
+            // Check if one title contains the other title
+            return cleanTitle1.Contains(cleanTitle2) || cleanTitle2.Contains(cleanTitle1);
         }
     }
 }

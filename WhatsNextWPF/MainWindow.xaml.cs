@@ -19,6 +19,7 @@ using MaterialDesignThemes.Wpf;
 using System.Runtime.CompilerServices;
 using WhatsNextCA;
 using System.Collections.ObjectModel;
+using System.Xml.Linq;
 
 namespace WhatsNextWPF
 {
@@ -106,9 +107,9 @@ namespace WhatsNextWPF
 
         /* ========== Height, Width, and Opacity for GroupBoxes ========== */
         public static float startGBHeight = 0;
-        public static float baseGBHeight = 400;
+        public static float baseGBHeight = 550;
         public static float startGBWidth = 0;
-        public static float baseGBWidth = 200;
+        public static float baseGBWidth = 300;
 
         private float _heightGBOne = startGBHeight;
         public float HeightGBOne
@@ -893,7 +894,7 @@ namespace WhatsNextWPF
         public int animeCounter = 0;
         public int animeTotal = 0;
 
-        public Recommendation recommendation = new Recommendation(); // Recommendation object
+        public Recommendation recommendation; // Recommendation object
         List<DataCollector.AnimeData> jData = new List<DataCollector.AnimeData>(); // List of anime data from Jikan
         List<DataCollector.AnimeData> cbData = new List<DataCollector.AnimeData>(); // List of anime data from Content-Based Filtering
 
@@ -959,6 +960,8 @@ namespace WhatsNextWPF
             this.DataContext = this;
 
             jikan = new Jikan();
+
+            recommendation = new Recommendation();
         }
 
         private async void ShowSnackBar(string message)
@@ -1701,6 +1704,8 @@ namespace WhatsNextWPF
 
             SelectionSP.Visibility = Visibility.Visible;
 
+            AnimeList.Clear();
+
             DoubleAnimation slOpacityAnimation = new DoubleAnimation(1, TimeSpan.FromSeconds(0.8));
 
             SelectionSP.BeginAnimation(StackPanel.OpacityProperty, slOpacityAnimation);
@@ -1708,78 +1713,67 @@ namespace WhatsNextWPF
             recommendTypeTB.IsEnabled = true;
         }
 
-        private void LoadSelectedAnime(object sender, EventArgs e)
+        private async void LoadSelectedAnime(object sender, EventArgs e)
         {
             AnimeList.Clear();
 
-            // Load test data into AnimeList
-            AnimeList.Add(new AnimeModel
+            if (recommendTypeTB.IsChecked == false)
             {
-                AnimeImage = SourceGBOne,
-                AnimeName = HeaderGBOne,
-                AnimeInfo = TextGBOne
-            });
-
-            AnimeList.Add(new AnimeModel
-            {
-                AnimeImage = SourceGBTwo,
-                AnimeName = HeaderGBTwo,
-                AnimeInfo = TextGBTwo
-            });
-
-            AnimeList.Add(new AnimeModel
-            {
-                AnimeImage = SourceGBThree,
-                AnimeName = HeaderGBThree,
-                AnimeInfo = TextGBThree
-            });
-
-            /*
-            if (jData.Count != 0)
-            {
-                DataCollector.AnimeData anime = jData[0];
-
-                // Fetch the anime images
-                var imageResponse = await jikan.GetAnimePicturesAsync((long)anime.MalId);
-                var image = imageResponse.Data.FirstOrDefault();
-                var imageUrl = image?.JPG.ImageUrl ?? "C:\\Users\\Carter\\Desktop\\Coding Projects\\WhatsNext\\WhatsNextWPF\\Resources\\Default.jpg";
-                var animeGenres = anime.Genres.Select(g => g.Name).ToImmutableList() ?? ImmutableList.Create("None");
-                if (animeGenres.Count == 0)
+                foreach (var anime in jData)
                 {
-                    animeGenres = ImmutableList.Create("None");
-                }
-                var animeType = anime.Type ?? "None";
-                var animeAgeRating = anime.Rating ?? "None";
+                    var imageResponse = await jikan.GetAnimePicturesAsync((long)anime.Id);
+                    var image = imageResponse.Data.FirstOrDefault();
+                    var imageUrl = image?.JPG.ImageUrl ?? "C:\\Users\\Carter\\Desktop\\Coding Projects\\WhatsNext\\WhatsNextWPF\\Resources\\Default.jpg";
 
-                // Add the image and text to each groupbox
-                SourceGBOne = new BitmapImage(new Uri(imageUrl, UriKind.Absolute));
-                imgOne.Width = 160;
-                imgOne.Height = 160;
-                var genreList = string.Join(", ", animeGenres);
-                TextGBOne = "MAL Rating: " + anime.Score + "\nGenres: " + genreList + "\nType: " + animeType + "\nAge Rating: " + animeAgeRating;
+                    AnimeList.Add(new AnimeModel
+                    {
+                        AnimeImage = new BitmapImage(new Uri(imageUrl, UriKind.Absolute)),
+                        AnimeName = anime.Title,
+                        AnimeInfo = // If score is 0.0, display "Not Avaliable", else display the score
+                                    "MAL Rating: " + (anime.Score == 0.0 ? "Not Avaliable" : anime.Score.ToString()) +
+                                    // If the rank is 0.0, display "Not Avaliable", else display the rank
+                                    "\nRank: " + (anime.Rank == 0.0 ? "Not Avaliable" : anime.Rank.ToString()) +
+                                    // If year is -1, display "Not Avaliable", else display the year
+                                    "\nYear: " + (anime.Year == -1 ? "Not Avaliable" : anime.Year.ToString()) +
+                                    "\nType: " + anime.Type +
+                                    // if episodes is > 1, display "Episodes", else display "Episode"
+                                    "\nEpisodes: " + anime.Episodes + (anime.Episodes > 1 ? " Episodes" : " Episode") +
+                                    "\nAge Rating: " + anime.AgeRating +
+                                    "\nGenres: " + anime.Genres +
+                                    "\nThemes: " + anime.Themes
+                    });
+                }
             }
-            else if (cbData.Count != 0)
+            else if (recommendTypeTB.IsChecked == true)
             {
-                DataCollector.AnimeData anime = cbData[0];
-
-                // Fetch the anime images
-                var imageResponse = await jikan.GetAnimePicturesAsync((long)anime.MalId);
-                var image = imageResponse.Data.FirstOrDefault();
-                var imageUrl = image?.JPG.ImageUrl ?? "C:\\Users\\Carter\\Desktop\\Coding Projects\\WhatsNext\\WhatsNextWPF\\Resources\\Default.jpg";
-                var animeGenres = anime.Genres.Select(g => g.Name).ToImmutableList() ?? ImmutableList.Create("None");
-                if (animeGenres.Count == 0)
+                foreach (var anime in cbData)
                 {
-                    animeGenres = ImmutableList.Create("None");
-                }
-                var animeType = anime.Type ?? "None";
-                var animeAgeRating = anime.Rating ?? "None";
+                    var imageResponse = await jikan.GetAnimePicturesAsync((long)anime.Id);
+                    var image = imageResponse.Data.FirstOrDefault();
+                    var imageUrl = image?.JPG.ImageUrl ?? "C:\\Users\\Carter\\Desktop\\Coding Projects\\WhatsNext\\WhatsNextWPF\\Resources\\Default.jpg";
 
-                // Add the image and text to each groupbox
-                SourceGBOne = new BitmapImage(new Uri(imageUrl, UriKind.Absolute));
-                imgOne.Width = 160;
-                imgOne.Height = 160;
+                    var genreList = string.Join(", ", anime.Genres);
+                    var themeList = string.Join(", ", anime.Themes);
+
+                    AnimeList.Add(new AnimeModel
+                    {
+                        AnimeImage = new BitmapImage(new Uri(imageUrl, UriKind.Absolute)),
+                        AnimeName = anime.Title,
+                        AnimeInfo = // If score is 0.0, display "Not Avaliable", else display the score
+                                    "MAL Rating: " + (anime.Score == 0.0 ? "Not Avaliable" : anime.Score.ToString()) +
+                                    // If the rank is 0.0, display "Not Avaliable", else display the rank
+                                    "\nRank: " + (anime.Rank == 0.0 ? "Not Avaliable" : anime.Rank.ToString()) +
+                                    // If year is -1, display "Not Avaliable", else display the year
+                                    "\nYear: " + (anime.Year == -1 ? "Not Avaliable" : anime.Year.ToString()) +
+                                    "\nType: " + anime.Type +
+                                    // if episodes is > 1, display "Episodes", else display "Episode"
+                                    "\nEpisodes: " + anime.Episodes + (anime.Episodes > 1 ? " Episodes" : " Episode") +
+                                    "\nAge Rating: " + anime.AgeRating +
+                                    "\nGenres: " + genreList +
+                                    "\nThemes: " + themeList
+                    });
+                }
             }
-            */
         }
 
         private void allTB_Click(object sender, RoutedEventArgs e)

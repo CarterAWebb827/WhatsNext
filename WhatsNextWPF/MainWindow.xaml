@@ -13,13 +13,40 @@
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Noto/#Noto"
         TextOptions.TextFormattingMode="Ideal"
         TextOptions.TextRenderingMode="Auto"
-        Title="What's Next - Anime Recommender" Height="800" Width="1300"
+        Title="What's Next - Anime Recommender" 
+        WindowState="Maximized"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="TemplateDict.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="ContentPresenter" x:Key="ItemAnimation">
+                <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                <Setter Property="RenderTransform">
+                    <Setter.Value>
+                        <ScaleTransform ScaleX="0" ScaleY="0"/>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation
+                                    Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                    From="0"
+                                    To="1"
+                                    Duration="0:0:0.25"/>
+                                <DoubleAnimation
+                                    Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                    From="0"
+                                    To="1"
+                                    Duration="0:0:0.25"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Style.Triggers>
+            </Style>    
         </ResourceDictionary>
     </Window.Resources>
     <StackPanel>
@@ -31,8 +58,8 @@
             <TabControl 
                 HorizontalContentAlignment="Stretch"
                 Style="{StaticResource MaterialDesignFilledUniformTabControl}">
-                <TabItem Header="Anime">
-                    <StackPanel Height="736">
+                <TabItem Header="Anime Selection">
+                    <StackPanel Height="935">
                         <StackPanel Orientation="Vertical">
                             <Grid VerticalAlignment="Top" Margin="32">
                                 <Grid.ColumnDefinitions>
@@ -109,28 +136,25 @@
                                 Margin="8" />
                         </Grid>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <Grid VerticalAlignment="Top" Margin="16">
+                            <Grid VerticalAlignment="Top" Margin="16" Height="602">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="250" />
-                                    <ColumnDefinition Width="250" />
-                                    <ColumnDefinition Width="250" />
-                                    <ColumnDefinition Width="250" />
-                                    <ColumnDefinition Width="250" />
+                                    <ColumnDefinition Width="350" />
+                                    <ColumnDefinition Width="350" />
+                                    <ColumnDefinition Width="350" />
+                                    <ColumnDefinition Width="350" />
+                                    <ColumnDefinition Width="350" />
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="425" />
-                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="590" />
+                                    <RowDefinition />
                                 </Grid.RowDefinitions>
                                 <GroupBox
                                         x:Name="gbOne"
                                         MouseEnter="MouseOver_GB"
                                         MouseLeave="MouseLeave_GB"
-                                        Height="{Binding HeightGBOne, Mode=TwoWay}"
-                                        Width="{Binding WidthGBOne, Mode=TwoWay}"
+                                        Height="178"
+                                        Width="148"
                                         Opacity="{Binding OpacityGBOne, Mode=TwoWay}"
-                                        Margin="8"
-                                        Grid.Row="0"
-                                        Grid.Column="0"
                                         VerticalAlignment="Center"
                                         HorizontalAlignment="Center"
                                         Header="{Binding HeaderGBOne, Mode=TwoWay}"
@@ -192,11 +216,9 @@
                                         x:Name="gbTwo"
                                         MouseEnter="MouseOver_GB"
                                         MouseLeave="MouseLeave_GB"
-                                        Height="{Binding HeightGBTwo, Mode=TwoWay}"
-                                        Width="{Binding WidthGBTwo, Mode=TwoWay}"
+                                        Height="178"
+                                        Width="148"
                                         Opacity="{Binding OpacityGBTwo, Mode=TwoWay}"
-                                        Margin="8"
-                                        Grid.Row="0"
                                         Grid.Column="1"
                                         VerticalAlignment="Center"
                                         HorizontalAlignment="Center"
@@ -259,11 +281,9 @@
                                         x:Name="gbThree"
                                         MouseEnter="MouseOver_GB"
                                         MouseLeave="MouseLeave_GB"
-                                        Height="{Binding HeightGBOne, Mode=TwoWay}"
-                                        Width="{Binding WidthGBOne, Mode=TwoWay}"
+                                        Height="178"
+                                        Width="148"
                                         Opacity="{Binding OpacityGBOne, Mode=TwoWay}"
-                                        Margin="8"
-                                        Grid.Row="0"
                                         Grid.Column="2"
                                         VerticalAlignment="Center"
                                         HorizontalAlignment="Center"
@@ -326,11 +346,9 @@
                                         x:Name="gbFour"
                                         MouseEnter="MouseOver_GB"
                                         MouseLeave="MouseLeave_GB"
-                                        Height="{Binding HeightGBOne, Mode=TwoWay}"
-                                        Width="{Binding WidthGBOne, Mode=TwoWay}"
+                                        Height="178"
+                                        Width="148"
                                         Opacity="{Binding OpacityGBOne, Mode=TwoWay}"
-                                        Margin="8"
-                                        Grid.Row="0"
                                         Grid.Column="3"
                                         VerticalAlignment="Center"
                                         HorizontalAlignment="Center"
@@ -393,11 +411,9 @@
                                         x:Name="gbFive"
                                         MouseEnter="MouseOver_GB"
                                         MouseLeave="MouseLeave_GB"
-                                        Height="{Binding HeightGBOne, Mode=TwoWay}"
-                                        Width="{Binding WidthGBOne, Mode=TwoWay}"
+                                        Height="178"
+                                        Width="148"
                                         Opacity="{Binding OpacityGBOne, Mode=TwoWay}"
-                                        Margin="8"
-                                        Grid.Row="0"
                                         Grid.Column="4"
                                         VerticalAlignment="Center"
                                         HorizontalAlignment="Center"
@@ -490,13 +506,16 @@
                             <ToggleButton
                                 x:Name="recommendTypeTB"
                                 Grid.Column="1"
+                                Margin="22"
                                 VerticalAlignment="Top"
                                 materialDesign:ElevationAssist.Elevation="Dp4"
                                 materialDesign:ToggleButtonAssist.OnContent="{materialDesign:PackIcon Kind=AlphaACircle}"
                                 Content="{materialDesign:PackIcon Kind=AlphaJCircle}"
                                 Style="{StaticResource MaterialDesignActionToggleButton}"
                                 ToolTip="MaterialDesignActionToggleButton"
-                                Visibility="Visible"/>
+                                Visibility="Visible"
+                                IsChecked="True"
+                                IsEnabled="False"/>
                             <materialDesign:Snackbar
                                 x:Name="TestSnackBar"
                                 Grid.Column="1"
@@ -527,53 +546,6 @@
                         </Grid>
                     </StackPanel>
                 </TabItem>
-                <TabItem Header="Manga">
-                    <StackPanel>
-                        <Grid VerticalAlignment="Top" Margin="32">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="312*" />
-                                <ColumnDefinition Width="67*"/>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="379*" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="379*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <TextBlock Grid.Column="3" Margin="157,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Text="Search:" Style="{DynamicResource MaterialDesignTitleLargeTextBlock}" Grid.ColumnSpan="2" />
-                            <materialDesign:AutoSuggestBox
-                                    Grid.Column="1"
-                                    Grid.ColumnSpan="6"
-                                    Grid.Row="2"
-                                    materialDesign:HintAssist.Hint="Search for a Manga"
-                                    materialDesign:TextFieldAssist.HasClearButton="True"
-                                    DropDownElevation="Dp0"
-                                    Style="{StaticResource MaterialDesignOutlinedAutoSuggestBox}"
-                                    Text="{Binding TextMangaTB, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                                    ValueMember="Key" >
-                                <materialDesign:AutoSuggestBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <DockPanel>
-                                            <Border  Width="Auto" Height="Auto" Background="{Binding Value}" CornerRadius="10" />
-                                            <TextBlock Margin="10,0,0,0" Text="{Binding Key}" />
-                                        </DockPanel>
-                                    </DataTemplate>
-                                </materialDesign:AutoSuggestBox.ItemTemplate>
-                            </materialDesign:AutoSuggestBox>
-                        </Grid>
-                    </StackPanel>
-                </TabItem>
             </TabControl>
         </StackPanel>
         <!-- Make the Visibility Collapsed if you arent doing anything with this Stack Panel -->
@@ -592,7 +564,8 @@
                 </Grid.RowDefinitions>
                 <ItemsControl ItemsSource="{Binding AnimeList}"
                               Grid.Row="0"
-                              VerticalAlignment="Center">
+                              VerticalAlignment="Center"
+                              ItemContainerStyle="{StaticResource ResourceKey=ItemAnimation}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel Orientation="Horizontal" />
