@@ -34,7 +34,7 @@
     <br />
     <br />
     ·
-    <a href="https://www.youtube.com/watch?v=saL8Bms1VtI">View Demo</a>
+    <a href="https://www.youtube.com/watch?v=5phQQbKldgE">View Demo</a>
     ·
   </p>
 </div>
@@ -109,7 +109,7 @@ Some things you may need for the project include a terminal with access to Git. 
 ## Usage
 
 Here I have an example video of what running Whats Next looks like:
-[https://www.youtube.com/watch?v=saL8Bms1VtI](https://www.youtube.com/watch?v=saL8Bms1VtI)
+[https://www.youtube.com/watch?v=5phQQbKldgE](https://www.youtube.com/watch?v=5phQQbKldgE)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
