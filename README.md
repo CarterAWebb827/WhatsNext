@@ -91,11 +91,15 @@ Some things you may need for the project include a terminal with access to Git. 
    ```sh
    git clone https://github.com/CarterAWebb827/WhatsNext.git
    ```
-2. Open the solution
+2. Open the directory
+   ```sh
+   cd WhatsNext
+   ```
+3. Open the solution
    ```sh
    ./WhatsNext.sln
    ```
-3. Run the program by pressing the green button in the top left - make sure it is set to "WhatsNextWPF"
+4. Run the program by pressing the green button in the top left - make sure it is set to "WhatsNextWPF"
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
