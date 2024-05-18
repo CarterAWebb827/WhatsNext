@@ -36,7 +36,7 @@ namespace WhatsNextWPF
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        protected bool SetProperty<T>(ref T backingStore, T value, [CallerMemberName] string propertyName = "", Action onChanged = null)
+        protected bool SetProperty<T>(ref T backingStore, T value, [CallerMemberName] string propertyName = "", Action? onChanged = null)
         {
             if (EqualityComparer<T>.Default.Equals(backingStore, value))
             {
@@ -900,7 +900,7 @@ namespace WhatsNextWPF
 
         /* ========== Jikan Client ========== */
         IJikan jikan;
-        PaginatedJikanResponse<ICollection<Anime>> animeResponse = null;
+        PaginatedJikanResponse<ICollection<Anime>>? animeResponse = null;
         List<Anime> animeResponsesList = new List<Anime>();
         List<Anime> sfwAnimeResponsesList = new List<Anime>();
         List<Anime> nsfwAnimeResponsesList = new List<Anime>();
@@ -1098,35 +1098,35 @@ namespace WhatsNextWPF
                     HandleAnimations();
                 }
 
-                Anime firstAnime;
-                Anime secondAnime;
-                Anime thirdAnime;
-                Anime fourthAnime;
-                Anime fifthAnime;
+                Anime firstAnime = new Anime();
+                Anime secondAnime = new Anime();
+                Anime thirdAnime = new Anime();
+                Anime fourthAnime = new Anime();
+                Anime fifthAnime = new Anime();
 
                 // Depending on the age rating selected, display the anime information
                 switch (_ageRatingSelected)
                 {
                     case AgeRatingSelected.SFW:
-                        firstAnime = sfwAnimeResponsesList[animeCounter];
-                        secondAnime = sfwAnimeResponsesList[animeCounter + 1];
-                        thirdAnime = sfwAnimeResponsesList[animeCounter + 2];
-                        fourthAnime = sfwAnimeResponsesList[animeCounter + 3];
-                        fifthAnime = sfwAnimeResponsesList[animeCounter + 4];
+                        if (sfwAnimeResponsesList.Count() > animeCounter) firstAnime = sfwAnimeResponsesList[animeCounter];
+                        if (sfwAnimeResponsesList.Count() > animeCounter + 1)  secondAnime = sfwAnimeResponsesList[animeCounter + 1];
+                        if (sfwAnimeResponsesList.Count() > animeCounter + 2) thirdAnime = sfwAnimeResponsesList[animeCounter + 2];
+                        if (sfwAnimeResponsesList.Count() > animeCounter + 3)  fourthAnime = sfwAnimeResponsesList[animeCounter + 3];
+                        if (sfwAnimeResponsesList.Count() > animeCounter + 4)  fifthAnime = sfwAnimeResponsesList[animeCounter + 4];
                         break;
                     case AgeRatingSelected.NSFW:
-                        firstAnime = nsfwAnimeResponsesList[animeCounter];
-                        secondAnime = nsfwAnimeResponsesList[animeCounter + 1];
-                        thirdAnime = nsfwAnimeResponsesList[animeCounter + 2];
-                        fourthAnime = nsfwAnimeResponsesList[animeCounter + 3];
-                        fifthAnime = nsfwAnimeResponsesList[animeCounter + 4];
+                        if (nsfwAnimeResponsesList.Count() > animeCounter) firstAnime = nsfwAnimeResponsesList[animeCounter];
+                        if (nsfwAnimeResponsesList.Count() > animeCounter + 1) secondAnime = nsfwAnimeResponsesList[animeCounter + 1];
+                        if (nsfwAnimeResponsesList.Count() > animeCounter + 2) thirdAnime = nsfwAnimeResponsesList[animeCounter + 2];
+                        if (nsfwAnimeResponsesList.Count() > animeCounter + 3) fourthAnime = nsfwAnimeResponsesList[animeCounter + 3];
+                        if (nsfwAnimeResponsesList.Count() > animeCounter + 4) fifthAnime = nsfwAnimeResponsesList[animeCounter + 4];
                         break;
                     default:
-                        firstAnime = animeResponsesList[animeCounter];
-                        secondAnime = animeResponsesList[animeCounter + 1];
-                        thirdAnime = animeResponsesList[animeCounter + 2];
-                        fourthAnime = animeResponsesList[animeCounter + 3];
-                        fifthAnime = animeResponsesList[animeCounter + 4];
+                        if (animeResponsesList.Count() > animeCounter) firstAnime = animeResponsesList[animeCounter];
+                        if (animeResponsesList.Count() > animeCounter + 1) secondAnime = animeResponsesList[animeCounter + 1];
+                        if (animeResponsesList.Count() > animeCounter + 2) thirdAnime = animeResponsesList[animeCounter + 2];
+                        if (animeResponsesList.Count() > animeCounter + 3) fourthAnime = animeResponsesList[animeCounter + 3];
+                        if (animeResponsesList.Count() > animeCounter + 4) fifthAnime = animeResponsesList[animeCounter + 4];
                         break;
                 }
 
@@ -1136,17 +1136,17 @@ namespace WhatsNextWPF
                     ShowLoading();
                 }
 
-                // Display the anime information in the groupbox
-                gbOne.Header = firstAnime.Title ?? "None";
-                gbTwo.Header = secondAnime.Title ?? "None";
-                gbThree.Header = thirdAnime.Title ?? "None";
-                gbFour.Header = fourthAnime.Title ?? "None";
-                gbFive.Header = fifthAnime.Title ?? "None";
+                // Display the anime information in the groupbox, use TitleEnglish if Title is null
+                gbOne.Header = firstAnime.TitleEnglish ?? firstAnime.Title;
+                gbTwo.Header = secondAnime.TitleEnglish ?? secondAnime.Title;
+                gbThree.Header = thirdAnime.TitleEnglish ?? thirdAnime.Title;
+                gbFour.Header = fourthAnime.TitleEnglish ?? fourthAnime.Title;
+                gbFive.Header = fifthAnime.TitleEnglish ?? fifthAnime.Title;
 
                 var imageWandH = 160;
 
                 // if there is data in the first anime, display the information
-                if (firstAnime != null)
+                if (firstAnime != null && firstAnime.MalId != null)
                 {
                     gbOne.Visibility = Visibility.Visible;
 
@@ -1180,7 +1180,7 @@ namespace WhatsNextWPF
                     gbOne.Visibility = Visibility.Collapsed;
                 }
 
-                if (secondAnime != null)
+                if (secondAnime != null && secondAnime.MalId != null)
                 {
                     gbTwo.Visibility = Visibility.Visible;
 
@@ -1212,7 +1212,7 @@ namespace WhatsNextWPF
                     gbTwo.Visibility = Visibility.Collapsed;
                 }
 
-                if (thirdAnime != null)
+                if (thirdAnime != null && thirdAnime.MalId != null)
                 {
                     gbThree.Visibility = Visibility.Visible;
 
@@ -1244,7 +1244,7 @@ namespace WhatsNextWPF
                     gbThree.Visibility = Visibility.Collapsed;
                 }
 
-                if (fourthAnime != null)
+                if (fourthAnime != null && fourthAnime.MalId != null)
                 {
                     gbFour.Visibility = Visibility.Visible;
 
@@ -1276,7 +1276,7 @@ namespace WhatsNextWPF
                     gbFour.Visibility = Visibility.Collapsed;
                 }
 
-                if (fifthAnime != null)
+                if (fifthAnime != null && fifthAnime.MalId != null)
                 {
                     gbFive.Visibility = Visibility.Visible;
 
@@ -1597,9 +1597,9 @@ namespace WhatsNextWPF
             //ForwardBVal = numAnime + 5;
 
             // "Animate" the click
-            AnimateClick(numAnime);
+            await AnimateClick(numAnime);
 
-            GetAnimeInfo();
+            await GetAnimeInfo();
         }
 
         private async void Forward_Click(object sender, RoutedEventArgs e)
@@ -1610,9 +1610,9 @@ namespace WhatsNextWPF
             //ForwardBVal = numAnime + 5;
 
             // "Animate" the click
-            AnimateClick(numAnime);
+            await AnimateClick(numAnime);
 
-            GetAnimeInfo();
+            await GetAnimeInfo();
         }
 
         private async Task AnimateClick(int numAnime)
@@ -1758,7 +1758,7 @@ namespace WhatsNextWPF
                     AnimeList.Add(new AnimeModel
                     {
                         AnimeImage = new BitmapImage(new Uri(imageUrl, UriKind.Absolute)),
-                        AnimeName = anime.Title,
+                        AnimeName = anime.TitleEnglish,
                         AnimeInfo = // If score is 0.0, display "Not Avaliable", else display the score
                                     "MAL Rating: " + (anime.Score == 0.0 ? "Not Avaliable" : anime.Score.ToString()) +
                                     // If the rank is 0.0, display "Not Avaliable", else display the rank
@@ -1776,7 +1776,7 @@ namespace WhatsNextWPF
             }
         }
 
-        private void allTB_Click(object sender, RoutedEventArgs e)
+        private async void allTB_Click(object sender, RoutedEventArgs e)
         {
             _ageRatingSelected = AgeRatingSelected.ALL;
             sfwTB.IsChecked = false;
@@ -1786,7 +1786,7 @@ namespace WhatsNextWPF
             {
                 animeCounter = 0;
 
-                GetAnimeInfo();
+                await GetAnimeInfo();
             }
         }
         private async void sfwTB_Click(object sender, RoutedEventArgs e)
@@ -1807,9 +1807,9 @@ namespace WhatsNextWPF
                 //ForwardBVal = numAnime + 5;
 
                 // "Animate" the click
-                AnimateClick(numAnime);
+                await AnimateClick(numAnime);
 
-                GetAnimeInfo();
+                await GetAnimeInfo();
             }
         }
 
@@ -1832,9 +1832,9 @@ namespace WhatsNextWPF
                 //ForwardBVal = numAnime + 5;
 
                 // "Animate" the click
-                AnimateClick(numAnime);
+                await AnimateClick(numAnime);
 
-                GetAnimeInfo();
+                await GetAnimeInfo();
             }
         }
 

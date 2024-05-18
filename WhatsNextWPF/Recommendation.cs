@@ -32,11 +32,11 @@ namespace WhatsNextWPF
 
             weights = JsonConvert.DeserializeObject<Weights>(weightData);
 
-            genreWeights = weights.GenreWeights;
-            themeWeights = weights.ThemeWeights;
+            genreWeights = weights.GenreWeights ?? new Dictionary<string, double>();
+            themeWeights = weights.ThemeWeights ?? new Dictionary<string, double>();
         }
 
-        public DataCollector.AnimeData GetAnimeFromTitle(string title)
+        public DataCollector.AnimeData? GetAnimeFromTitle(string title)
         {
             foreach (var anime in animes)
             {
@@ -95,14 +95,24 @@ namespace WhatsNextWPF
             // Search through the list of anime data
             foreach (var a in animes)
             {
+                double similarityScore = 0.0;
+
                 // Skip the anime if it is the same as the input anime
-                if (a.Title == anime.Title || AreTitlesSimilar(anime.Title, a.Title))
+                if (anime != null && a != null)
+                {
+                    if (a.Title == anime.Title || AreTitlesSimilar(anime.Title, a.Title) || AreEnglishTitlesSimilar(anime.TitleEnglish, a.TitleEnglish))
+                    {
+                        continue;
+                    }
+
+                    // Calculate the similarity score between the input anime and the current anime
+                    similarityScore = await CalculateSimilarity(anime, a, maxYearDifference, maxEpisodeDifference);
+                }
+                else
                 {
                     continue;
                 }
 
-                // Calculate the similarity score between the input anime and the current anime
-                double similarityScore = await CalculateSimilarity(anime, a, maxYearDifference, maxEpisodeDifference);
 
                 // Add the anime and its similarity score to the list of recommendations
                 recommendations.Add(new Tuple<DataCollector.AnimeData, double>(a, similarityScore));
@@ -223,6 +233,31 @@ namespace WhatsNextWPF
 
             // Check if one title contains the other title
             return cleanTitle1.Contains(cleanTitle2) || cleanTitle2.Contains(cleanTitle1);
+        }
+
+        private bool AreEnglishTitlesSimilar(string title1, string title2)
+        {
+            if (!string.IsNullOrEmpty(title1) && !string.IsNullOrEmpty(title2))
+            {
+                // Remove any non-alphanumeric characters from the titles
+                string cleanTitle1 = new string(title1.Where(c => char.IsLetterOrDigit(c)).ToArray());
+                string cleanTitle2 = new string(title2.Where(c => char.IsLetterOrDigit(c)).ToArray());
+
+                // Convert the titles to lowercase
+                cleanTitle1 = cleanTitle1.ToLower();
+                cleanTitle2 = cleanTitle2.ToLower();
+
+                // Remove any whitespace from the titles
+                cleanTitle1 = cleanTitle1.Replace(" ", "");
+                cleanTitle2 = cleanTitle2.Replace(" ", "");
+
+                // Check if one title contains the other title
+                return cleanTitle1.Contains(cleanTitle2) || cleanTitle2.Contains(cleanTitle1);
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }
